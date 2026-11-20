@@ -246,12 +246,14 @@ const P = {
  plata: { name: 'Aro', sub: 'Plata', img: 'img/plata.webp', tag: 'Asa de aro forrada', mat: 'Hilo plateado satinado', metal: 'Asa circular forrada a mano', wear: 'En la mano', story: 'Hilo plateado satinado y asa circular forrada a mano. Escultural y luminoso.' }
 };
 const IDS = Object.keys(P);
-IDS.forEach((k) => { P[k].id = k; if (!P[k].gallery) P[k].gallery = [P[k].img]; });
+const SZ = {"trenza": "g", "cacao": "g", "aros": "m", "lentejuelas": "p", "flecos": "m", "noir": "m", "bosque": "g", "saten": "m", "terciopelo": "p", "plata": "p", "movil-oliva": "p", "movil-burdeos": "p"};
+const PRICE = { g: 25, m: 20, p: 15 }, SZNAME = { g: 'Grande', m: 'Mediano', p: 'Pequeño' };
+IDS.forEach((k) => { P[k].id = k; P[k].size = SZNAME[SZ[k]]; P[k].price = PRICE[SZ[k]] + ' €'; if (!P[k].gallery) P[k].gallery = [P[k].img]; });
 const FEATURES = [['cacao', 'Pieza de la temporada', 0], ['trenza', 'Textura en relieve', 1], ['aros', 'Elegancia de noche', 0], ['lentejuelas', 'Pieza statement', 1], ['noir', 'El esencial', 0]];
 const COLORS = [['Verde petróleo', '#0F4A45'], ['Burdeos', '#5E1A22'], ['Chocolate', '#3E2418'], ['Arena', '#B08A62'], ['Noir', '#141210'], ['Marfil', '#EDE4D3'], ['Plata', '#A9ADB3'], ['Blanco', '#F7F5F0']];
 const METALS = [['Oro', '#D4B47C'], ['Plata', '#C9CCD1']];
 const HANDLES = ['Cadena', 'Aro', 'Trenzada'];
-const SIZES = ['Mini', 'Midi', 'Maxi'];
+const SIZES = ['Pequeño', 'Mediano', 'Grande'];
 const TYPES = ['Bolso', 'Para móvil', 'Monedero'];
 const EXTRAS = ['Flecos', 'Lentejuelas', 'Forro estampado'];
 const WHY = [['I.', 'Irrepetible', 'No existen dos bolsos Elunay iguales. Cada uno nace de unas manos y de un momento concretos, y eso lo hace único en el mundo.'], ['II.', 'Tiempo', 'Horas de tejido punto a punto, sin prisas y sin máquinas. Cuando llevas un Elunay, llevas ese tiempo contigo.'], ['III.', 'Para durar', 'Hilos elegidos por su resistencia, herrajes montados uno a uno y la placa grabada como firma. Pensado para acompañarte durante años.']];
@@ -267,13 +269,13 @@ let tt;
 function toast(m) { const t = $('#toast'); t.textContent = '✦ ' + m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 2600); }
 function renderCart() {
  const b = $('#badge'); b.hidden = !cart.length; b.textContent = cart.length;
- $('#cartList').innerHTML = cart.length ? cart.map((id, i) => { const p = P[id]; return `<div style="display:flex;gap:14px;align-items:center"><img src="${p.img}" alt="" style="width:76px;height:96px;object-fit:contain"><div style="flex:1"><div class="serif" style="font-size:19px">${p.name} <i>${p.sub}</i></div><div style="font-size:13px;color:var(--muted)">[PRECIO] €</div></div><button data-rm="${i}" style="min-height:44px;border:0;background:transparent;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-decoration:underline">Quitar</button></div>`; }).join('') : '<p class="serif" style="margin:40px 0 0;text-align:center;font-size:22px;font-style:italic;color:var(--muted)">Tu próxima pieza favorita te espera.</p>';
+ $('#cartList').innerHTML = cart.length ? cart.map((id, i) => { const p = P[id]; return `<div style="display:flex;gap:14px;align-items:center"><img src="${p.img}" alt="" style="width:76px;height:96px;object-fit:contain"><div style="flex:1"><div class="serif" style="font-size:19px">${p.name} <i>${p.sub}</i></div><div style="font-size:13px;color:var(--muted)">${p.price}</div></div><button data-rm="${i}" style="min-height:44px;border:0;background:transparent;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-decoration:underline">Quitar</button></div>`; }).join('') : '<p class="serif" style="margin:40px 0 0;text-align:center;font-size:22px;font-style:italic;color:var(--muted)">Tu próxima pieza favorita te espera.</p>';
 }
 function add(id) { cart.push(id); store.set('cart', cart); renderCart(); toast(P[id].name + ' ' + P[id].sub + ' añadido a tu cesta'); }
 function fav(id) { favs[id] = !favs[id]; store.set('favs', favs); toast(favs[id] ? 'Guardado en tus favoritos' : 'Eliminado de favoritos'); document.querySelectorAll(`[data-fav="${id}"]`).forEach((b) => { b.innerHTML = heart(favs[id], b.dataset.c); b.setAttribute('aria-label', favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'); }); }
 function quick(id) {
  const p = P[id], q = $('#quick');
- q.innerHTML = `<div class="dialog" role="dialog" aria-modal="true" aria-label="${p.name} ${p.sub}"><div class="ph stage-bg"><img src="${p.img}" alt="Bolso ${p.name} ${p.sub}"></div><div style="padding:44px 36px;display:flex;flex-direction:column;gap:18px"><span class="kick bronze">${p.tag}</span><h3 class="serif" style="margin:0;font-size:44px;line-height:1.02">${p.name}<br><i>${p.sub}</i></h3><span class="serif bronze" style="font-size:26px">[PRECIO] €</span><p style="margin:0;color:#3A342E">${p.story}</p><div class="row"><button class="btn ink" data-add="${id}" data-closeq>Añadir a la cesta</button><a class="btn" href="#ficha-${id}">Ver ficha</a></div></div><button class="x" aria-label="Cerrar" data-closeq>×</button></div>`;
+ q.innerHTML = `<div class="dialog" role="dialog" aria-modal="true" aria-label="${p.name} ${p.sub}"><div class="ph stage-bg"><img src="${p.img}" alt="Bolso ${p.name} ${p.sub}"></div><div style="padding:44px 36px;display:flex;flex-direction:column;gap:18px"><span class="kick bronze">${p.tag}</span><h3 class="serif" style="margin:0;font-size:44px;line-height:1.02">${p.name}<br><i>${p.sub}</i></h3><span class="serif bronze" style="font-size:26px">${p.price}</span><p style="margin:0;color:#3A342E">${p.story}</p><div class="row"><button class="btn ink" data-add="${id}" data-closeq>Añadir a la cesta</button><a class="btn" href="#ficha-${id}">Ver ficha</a></div></div><button class="x" aria-label="Cerrar" data-closeq>×</button></div>`;
  q.hidden = false;
 }
 
@@ -295,6 +297,7 @@ function optsHTML(c, full) {
  }
  return `<div class="opts">${h}</div>`;
 }
+const piecePrice = () => '30 €';
 const pieceName = (c) => c.type === 0 ? 'Bolso ' + SIZES[c.size] : TYPES[c.type] === 'Para móvil' ? 'Bolso para móvil' : 'Monedero';
 let mockId = 0;
 function mock(c, scale) {
@@ -348,7 +351,7 @@ ${rim}${zip}${sq}${fr}
 }
 
 /* ---------- revista ---------- */
-const btnsFor = (id, dark) => { const c = dark ? '#D4B47C' : '#8A6A3E'; return `<div class="row" style="margin-top:auto"><span class="serif" style="font-size:26px;color:${c};margin-right:8px">[PRECIO] €</span><button class="icon-btn" data-fav="${id}" data-c="${c}" aria-label="${favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${heart(favs[id], c)}</button><button class="btn solid" data-add="${id}">Añadir</button><a class="btn" href="#ficha-${id}">Ver ficha</a></div>`; };
+const btnsFor = (id, dark) => { const c = dark ? '#D4B47C' : '#8A6A3E'; return `<div class="row" style="margin-top:auto"><span class="serif" style="font-size:26px;color:${c};margin-right:8px">${P[id].price}</span><button class="icon-btn" data-fav="${id}" data-c="${c}" aria-label="${favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${heart(favs[id], c)}</button><button class="btn solid" data-add="${id}">Añadir</button><a class="btn" href="#ficha-${id}">Ver ficha</a></div>`; };
 const PAGES = [];
 PAGES.push({ name: 'Portada', html: `<img src="img/portada.jpg" alt="Bolso Trenza verde petróleo, portada de la revista Elunay" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,12,10,.6) 0%,rgba(14,12,10,0) 32%,rgba(14,12,10,0) 52%,rgba(14,12,10,.88) 100%)"></div>
 <div style="position:relative;height:100%;padding:3vh 4vw 11vh;display:flex;flex-direction:column;color:var(--paper)">
@@ -387,17 +390,17 @@ ${btnsFor(id, dark)}<button class="btn" data-go="10" style="align-self:flex-star
 PAGES.push({ name: 'Para tu móvil', html: `<div class="spread"><div class="half"><img src="img/movil-duo.jpg" alt="Bolsos para el móvil en burdeos y en verde oliva" style="width:100%;height:100%;object-fit:cover"><span class="kick" style="position:absolute;top:2.6vh;left:2.6vw;background:var(--ink);color:var(--gold);padding:9px 12px">Novedad</span></div>
 <div class="half txt"><span class="kick bronze">Nueva línea</span><h2 class="serif h1">Para tu <i class="bronze">móvil</i></h2>
 <p class="lead" style="color:#3A342E">Manos libres, móvil siempre a mano. Bolsitos tejidos a mano con bandolera trenzada larga para llevar cruzados, con nuestra placa grabada.</p>
-<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2vw;flex:1;min-height:0">${['movil-oliva', 'movil-burdeos'].map((id) => `<div style="display:flex;flex-direction:column;gap:8px;min-height:0"><button data-quick="${id}" class="stage-bg" style="flex:1;min-height:120px;border:0;padding:0"><img src="${P[id].img}" alt="Bolso ${P[id].name} ${P[id].sub}" style="width:100%;height:100%;object-fit:contain;padding:10px;filter:drop-shadow(0 14px 16px rgba(14,12,10,.2))"></button><span class="serif" style="font-size:min(4.4vw,2.6vh)">${P[id].sub}</span><span style="font-size:13px;color:var(--muted)">[PRECIO] €</span><div class="row" style="gap:6px"><button class="btn solid" style="min-height:44px;padding:0 14px" data-add="${id}">Añadir</button><a class="btn" style="min-height:44px;padding:0 14px" href="#ficha-${id}">Ficha</a></div></div>`).join('')}</div>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2vw;flex:1;min-height:0">${['movil-oliva', 'movil-burdeos'].map((id) => `<div style="display:flex;flex-direction:column;gap:8px;min-height:0"><button data-quick="${id}" class="stage-bg" style="flex:1;min-height:120px;border:0;padding:0"><img src="${P[id].img}" alt="Bolso ${P[id].name} ${P[id].sub}" style="width:100%;height:100%;object-fit:contain;padding:10px;filter:drop-shadow(0 14px 16px rgba(14,12,10,.2))"></button><span class="serif" style="font-size:min(4.4vw,2.6vh)">${P[id].sub}</span><span style="font-size:13px;color:var(--muted)">${P[id].price}</span><div class="row" style="gap:6px"><button class="btn solid" style="min-height:44px;padding:0 14px" data-add="${id}">Añadir</button><a class="btn" style="min-height:44px;padding:0 14px" href="#ficha-${id}">Ficha</a></div></div>`).join('')}</div>
 <span class="folio bronze">— 09 —</span></div></div>` });
 PAGES.push({ name: 'Catálogo', html: `<div style="height:100%;padding:5vh 4vw 10vh;display:flex;flex-direction:column;gap:2.4vh">
 <div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:1.6vh"><div><span class="kick bronze">Catálogo · Invierno 2026</span><h2 class="serif" style="margin:4px 0 0;font-size:min(8vw,6.8vh);line-height:1">Toda la <i class="bronze">colección</i></h2></div><button class="btn" data-go="10">Todas se tejen a tu gusto →</button></div>
-<div class="cat">${IDS.map((id) => `<button data-quick="${id}"><span class="ph"><img src="${P[id].img}" alt="Bolso ${P[id].name} ${P[id].sub}" loading="lazy"></span><span class="nm">${P[id].name}<br><i>${P[id].sub}</i></span><span class="pr">[PRECIO] €</span></button>`).join('')}</div></div>` });
+<div class="cat">${IDS.map((id) => `<button data-quick="${id}"><span class="ph"><img src="${P[id].img}" alt="Bolso ${P[id].name} ${P[id].sub}" loading="lazy"></span><span class="nm">${P[id].name}<br><i>${P[id].sub}</i></span><span class="pr">${P[id].price}</span></button>`).join('')}</div></div>` });
 PAGES.push({ name: 'A tu gusto', html: `<div class="spread"><div class="half txt" style="justify-content:center">
 <span class="kick bronze">Lo que nos hace únicos</span>
 <h2 class="serif h1">Tejido <i class="bronze">a tu gusto</i></h2>
 <p class="lead" style="color:#3A342E">Cualquier pieza de esta revista puede tejerse para ti. Tú eliges el hilo, los herrajes, el asa y el tamaño, y grabamos tus iniciales en la placa. Nadie más tendrá un bolso igual.</p>
 <div id="mgOpts">${optsHTML(cfg, false)}</div>
-<div class="row"><a class="btn ink" href="#encargo">Encargar mi pieza →</a><span style="font-size:13px;color:var(--muted)">Desde [PRECIO] € · Lista en [DÍAS] días</span></div></div>
+<div class="row"><a class="btn ink" href="#encargo">Encargar mi pieza →</a><span style="font-size:13px;color:var(--muted)">Pieza a medida: 30 € · Lista en [DÍAS] días</span></div></div>
 <div class="half dark stick" style="display:flex;align-items:center;justify-content:center;background:#171411"><div id="mgMock">${mock(cfg, 1.6)}</div><span class="folio gold" style="position:absolute;bottom:3vh;right:3vw">— 11 —</span></div></div>` });
 PAGES.push({ name: 'La artesana', html: `<div class="spread rev"><div class="half" style="background:#E6DDD2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:4vw;color:#6B5F52"><span class="kick">[Foto de la artesana tejiendo]</span><span style="font-size:13px;max-width:320px">Una foto real de quien teje cada Elunay genera más confianza que cualquier texto.</span></div>
 <div class="half txt"><span class="kick bronze">La artesana</span><h2 class="serif h1">Las manos <i class="bronze">detrás de Elunay</i></h2>
@@ -444,7 +447,7 @@ function mgUpdate() { $('#mgMock').innerHTML = mock(cfg, 1.6); $('#mgOpts').inne
 /* ---------- ficha ---------- */
 function renderFicha(id) {
  const p = P[id]; let gi = 0, open = 0, strap = 2;
- const acc = [['Detalles de la pieza', `Tejido: ${p.mat}\nHerrajes: ${p.metal}\nCómo llevarlo: ${p.wear}\nFirma: placa grabada Elunay`], ['Medidas', 'Ancho: [CM] cm · Alto: [CM] cm · Fondo: [CM] cm\nLargo del asa: [CM] cm'], ['Cuidados', 'Guárdalo relleno y dentro de su bolsa para que conserve la forma.\nEvita la humedad y la luz solar directa durante mucho tiempo.\n[Añade tus recomendaciones de lavado]'], ['Envío y devoluciones', 'Envío en [PLAZO] días laborables, en caja de regalo.\nDevoluciones en [DÍAS] días (las piezas personalizadas no admiten devolución).']];
+ const acc = [['Detalles de la pieza', `Tamaño: ${p.size}\nTejido: ${p.mat}\nHerrajes: ${p.metal}\nCómo llevarlo: ${p.wear}\nFirma: placa grabada Elunay`], ['Medidas', 'Ancho: [CM] cm · Alto: [CM] cm · Fondo: [CM] cm\nLargo del asa: [CM] cm'], ['Cuidados', 'Guárdalo relleno y dentro de su bolsa para que conserve la forma.\nEvita la humedad y la luz solar directa durante mucho tiempo.\n[Añade tus recomendaciones de lavado]'], ['Envío y devoluciones', 'Envío en [PLAZO] días laborables, en caja de regalo.\nDevoluciones en [DÍAS] días (las piezas personalizadas no admiten devolución).']];
  const rel = IDS.filter((k) => k !== id).slice(0, 4);
  const v = $('#v-ficha');
  const draw = () => {
@@ -453,14 +456,14 @@ function renderFicha(id) {
 <div class="pd"><div class="gal"><div class="thumbs" role="tablist" aria-label="Galería">${p.gallery.map((g, i) => `<button role="tab" class="${i === gi ? 'on' : ''}" aria-selected="${i === gi}" data-gi="${i}" aria-label="Foto ${i + 1}"><img src="${g}" alt=""></button>`).join('')}</div>
 <div class="main stage-bg"><img id="mainImg" src="${p.gallery[gi]}" alt="Bolso ${p.name} ${p.sub}, foto ${gi + 1}">${p.gallery.length > 1 ? '<button class="arrow" style="left:10px" data-gstep="-1" aria-label="Foto anterior">‹</button><button class="arrow" style="right:10px" data-gstep="1" aria-label="Foto siguiente">›</button>' : ''}</div></div>
 <div class="info"><span class="kick bronze">Pieza única · Tejida a mano</span><h1 class="serif" style="margin:0;font-size:clamp(40px,5vw,56px);line-height:.98">${p.name}<br><i class="bronze">${p.sub}</i></h1>
-<div class="row" style="align-items:baseline"><span class="serif" style="font-size:30px">[PRECIO] €</span><span style="font-size:13px;color:var(--muted)">IVA incluido · Caja de regalo</span></div>
+<div class="row" style="align-items:baseline"><span class="serif" style="font-size:30px">${p.price}</span><span style="font-size:13px;color:var(--muted)">IVA incluido · Caja de regalo</span></div>
 <p style="margin:0;color:#3A342E">${p.story} Firmado con la placa grabada Elunay.</p>
 <div><span class="kick" style="color:var(--muted)">Cómo lo quieres llevar</span><div class="row" style="margin-top:10px">${['Asa de mano', 'Bandolera', 'Ambas'].map((o, i) => `<button class="pill ${i === strap ? 'on' : ''}" data-strap="${i}" aria-pressed="${i === strap}">${o}</button>`).join('')}</div></div>
 <div class="row" style="flex-wrap:nowrap"><button class="btn ink" style="flex:1;min-height:56px" data-add="${id}">Añadir a la cesta</button><button class="icon-btn" style="width:56px;height:56px" data-fav="${id}" data-c="#8A6A3E" aria-label="${favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${heart(favs[id], '#8A6A3E')}</button></div>
 <a class="btn" href="#encargo" style="color:var(--bronze)">Quiero este modelo a mi gusto →</a>
 <div class="trust"><span>Pago seguro</span><span>Envío [PLAZO] días</span><span>Devolución [DÍAS] días</span></div>
 <div class="acc">${acc.map((a, i) => `<button aria-expanded="${i === open}" data-acc="${i}">${a[0]}<span class="bronze" style="font:22px Jost">${i === open ? '−' : '+'}</span></button>${i === open ? `<p>${a[1]}</p>` : ''}`).join('')}</div></div></div>
-<section style="margin-top:88px;display:flex;flex-direction:column;gap:28px"><h2 class="serif" style="margin:0;font-size:clamp(32px,4vw,44px)">También te <i class="bronze">enamorará</i></h2><div class="rel">${rel.map((k) => `<a href="#ficha-${k}"><span class="ph stage-bg"><img src="${P[k].img}" alt="Bolso ${P[k].name} ${P[k].sub}" loading="lazy"></span><span class="serif" style="font-size:21px">${P[k].name} <i>${P[k].sub}</i></span><span style="font-size:14px;color:var(--muted)">[PRECIO] €</span></a>`).join('')}</div></section></div>`;
+<section style="margin-top:88px;display:flex;flex-direction:column;gap:28px"><h2 class="serif" style="margin:0;font-size:clamp(32px,4vw,44px)">También te <i class="bronze">enamorará</i></h2><div class="rel">${rel.map((k) => `<a href="#ficha-${k}"><span class="ph stage-bg"><img src="${P[k].img}" alt="Bolso ${P[k].name} ${P[k].sub}" loading="lazy"></span><span class="serif" style="font-size:21px">${P[k].name} <i>${P[k].sub}</i></span><span style="font-size:14px;color:var(--muted)">${P[k].price}</span></a>`).join('')}</div></section></div>`;
  };
  draw();
  v.onclick = (e) => {
@@ -479,7 +482,7 @@ function renderEncargo() {
  const c = cfg, col = COLORS[c.color], met = METALS[c.metal];
  const ex = EXTRAS.filter((e) => c.extras[e]); const exT = ex.length ? ex.join(', ') : 'Ninguno';
  const model = P[IDS[c.model]];
- const msg = `Hola Elunay, quiero encargar un bolso a mi gusto:\n- Modelo: ${model.name} ${model.sub}\n- Hilo: ${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}\n- Herrajes: ${met[0]}\n- Pieza: ${pieceName(c)}\n${c.type !== 2 ? '- Asa: ' + HANDLES[c.handle] + '\n' : ''}- Extras: ${exT}\n- Iniciales: ${c.initials || '—'}\n- Nombre: ${c.name || '—'}\n- Contacto: ${c.contact || '—'}\n- Notas: ${c.notes || '—'}${cart.length ? '\n- En mi cesta: ' + cart.map((k) => P[k].name + ' ' + P[k].sub).join(', ') : ''}`;
+ const msg = `Hola Elunay, quiero encargar un bolso a mi gusto:\n- Modelo: ${model.name} ${model.sub}\n- Hilo: ${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}\n- Herrajes: ${met[0]}\n- Pieza: ${pieceName(c)} (${piecePrice(c)})\n${c.type !== 2 ? '- Asa: ' + HANDLES[c.handle] + '\n' : ''}- Extras: ${exT}\n- Iniciales: ${c.initials || '—'}\n- Nombre: ${c.name || '—'}\n- Contacto: ${c.contact || '—'}\n- Notas: ${c.notes || '—'}${cart.length ? '\n- En mi cesta: ' + cart.map((k) => P[k].name + ' ' + P[k].sub).join(', ') : ''}`;
  const pills = (arr, key) => arr.map((n, i) => `<button class="pill ${c[key] === i ? 'on' : ''}" aria-pressed="${c[key] === i}" data-set="${key}" data-v="${i}">${Array.isArray(n) ? n[0] : n}</button>`).join('');
  const step = [
   `<h2 class="serif" style="margin:0;font-size:30px">Elige el modelo base</h2><div class="models">${IDS.map((k, i) => `<button class="${c.model === i ? 'on' : ''}" aria-pressed="${c.model === i}" data-set="model" data-v="${i}"><span class="ph"><img src="${P[k].img}" alt="" loading="lazy"></span><span>${P[k].name} <i>${P[k].sub}</i></span></button>`).join('')}</div>`,
@@ -490,7 +493,7 @@ function renderEncargo() {
 <p style="margin:0;font-size:13px;color:#A89E92">Si el botón no abre tu app, escríbenos a ${EMAIL} o al WhatsApp ${WHATSAPP} y copia este resumen:</p>
 <pre style="margin:0;white-space:pre-wrap;font:14px/1.7 Jost,sans-serif;background:#171411;border:1px solid rgba(212,180,124,.3);padding:16px;max-width:600px">${esc(msg)}</pre><button class="btn" data-copy style="align-self:flex-start">Copiar resumen</button>`
  ];
- v.innerHTML = `<header style="border-bottom:1px solid rgba(212,180,124,.25)"><div class="bar" style="background:transparent"><div class="in"><a href="#revista" class="kick">← Revista</a><a href="#revista" class="logo">ELUNAY</a><span class="gold" style="font-size:12px;letter-spacing:.16em">Desde [PRECIO] € · [DÍAS] días</span></div></div></header>
+ v.innerHTML = `<header style="border-bottom:1px solid rgba(212,180,124,.25)"><div class="bar" style="background:transparent"><div class="in"><a href="#revista" class="kick">← Revista</a><a href="#revista" class="logo">ELUNAY</a><span class="gold" style="font-size:12px;letter-spacing:.16em">A medida: 30 € · [DÍAS] días</span></div></div></header>
 <div class="wrap"><div style="flex:999 1 560px;display:flex;flex-direction:column;gap:30px">
 <div><span class="kick gold">Encargo a tu gusto</span><h1 class="serif" style="margin:8px 0 0;font-size:clamp(40px,5.4vw,64px);line-height:.98">Tu Elunay, <i class="gold">tejido para ti</i></h1></div>
 <ol class="steps">${['Modelo', 'Detalles', 'Tus datos', 'Enviar'].map((n, i) => `<li><button class="${i <= c.step ? 'done' : ''} ${i === c.step ? 'cur' : ''}" ${i === c.step ? 'aria-current="step"' : ''} data-step="${i}"><span class="serif" style="font-size:18px;letter-spacing:0">${['I', 'II', 'III', 'IV'][i]}</span>${n}</button></li>`).join('')}</ol>
@@ -498,7 +501,7 @@ function renderEncargo() {
 <div style="display:flex;justify-content:space-between;border-top:1px solid rgba(212,180,124,.25);padding-top:22px"><button class="btn" data-step="${c.step - 1}" style="visibility:${c.step ? 'visible' : 'hidden'}">← Atrás</button>${c.step < 3 ? `<button class="btn" data-step="${c.step + 1}" style="background:var(--paper);color:var(--ink);border-color:var(--paper)">Continuar →</button>` : ''}</div></div>
 <aside class="aside" aria-label="Tu pieza"><span class="kick gold" style="align-self:flex-start">Tu pieza</span><div style="position:relative;height:340px;width:100%;display:flex;align-items:center;justify-content:center"><div style="position:absolute;width:340px;height:340px;max-width:100%;border-radius:50%;background:radial-gradient(circle,${col[1]}66 0%,transparent 65%)"></div>${mock(c, 1.1)}</div>
 <dl><dt>Modelo</dt><dd>${model.name} ${model.sub}</dd><dt>Hilo</dt><dd>${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}</dd><dt>Herrajes</dt><dd>${met[0]}</dd><dt>Pieza</dt><dd>${pieceName(c)}</dd>${c.type !== 2 ? `<dt>${c.type === 1 ? 'Bandolera' : 'Asa'}</dt><dd>${HANDLES[c.handle]}</dd>` : ''}<dt>Extras</dt><dd>${exT}</dd></dl>
-<div style="width:100%;border-top:1px solid rgba(212,180,124,.3);padding-top:16px;display:flex;justify-content:space-between;align-items:baseline"><span class="kick" style="color:#A89E92">Desde</span><span class="serif gold" style="font-size:28px">[PRECIO] €</span></div></aside></div>`;
+<div style="width:100%;border-top:1px solid rgba(212,180,124,.3);padding-top:16px;display:flex;justify-content:space-between;align-items:baseline"><span class="kick" style="color:#A89E92">Precio</span><span class="serif gold" style="font-size:28px">${piecePrice(c)}</span></div></aside></div>`;
 }
 $('#v-encargo').addEventListener('click', (e) => {
  const t = e.target.closest('button'); if (!t) return;

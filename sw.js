@@ -1,4 +1,4 @@
-const CACHE = 'elunay-v7';
+const CACHE = 'elunay-v8';
 const FILES = ['./', './index.html', './manifest.webmanifest', './img/portada.jpg', './img/trenza.webp', './img/trenza-1.jpg', './img/trenza-2.jpg', './img/cacao.webp', './img/arena.webp', './img/flecos.webp', './img/burdeos.webp', './img/noir.webp', './img/bosque.webp', './img/chocolate.webp', './img/terciopelo.webp', './img/plata.webp', './img/movil-oliva.webp', './img/movil-burdeos.webp', './img/movil-oliva-1.jpg', './img/movil-oliva-2.jpg', './img/movil-burdeos-1.jpg', './img/movil-duo.jpg', './img/icon-192.png', './img/icon-512.png'];
 self.addEventListener('install', (e) => { e.waitUntil(caches.open(CACHE).then((c) => c.addAll(FILES)).then(() => self.skipWaiting())); });
 self.addEventListener('activate', (e) => { e.waitUntil(caches.keys().then((ks) => Promise.all(ks.filter((k) => k !== CACHE).map((k) => caches.delete(k)))).then(() => self.clients.claim())); });

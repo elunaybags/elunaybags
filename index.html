@@ -35,8 +35,17 @@ img{display:block}
 
 /* ===== Revista ===== */
 #mag{position:relative}
-.stage{position:sticky;top:0;height:var(--vh);overflow:hidden;perspective:2600px;perspective-origin:0 50%}
-.pg{position:absolute;inset:0;overflow:hidden;transform-origin:0 50%;backface-visibility:hidden;will-change:transform;background:var(--paper)}
+.stage{position:relative;height:var(--vh);overflow:hidden;perspective:2600px;perspective-origin:0 50%;touch-action:pan-y}
+body.mag-on{overflow:hidden}
+.pg{transition:transform .95s cubic-bezier(.55,.06,.3,1),box-shadow .95s,visibility 0s linear 0s;overflow-y:auto;overscroll-behavior:contain}
+.pg.turned{transform:rotateY(-100deg);visibility:hidden;box-shadow:none;transition:transform .95s cubic-bezier(.55,.06,.3,1),box-shadow .95s,visibility 0s linear .95s}
+.pg.turning{box-shadow:30px 0 70px rgba(0,0,0,.5)}
+.pg .shade{opacity:0;transition:opacity .95s;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.18) 60%,rgba(0,0,0,.55))}
+.pg.turned .shade{opacity:1}
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:42;width:52px;height:52px;border-radius:26px;border:1px solid rgba(212,180,124,.6);background:rgba(14,12,10,.7);color:var(--paper);font-size:24px;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+.nav-arrow[disabled]{opacity:0;pointer-events:none}
+@media(max-width:820px){.nav-arrow{top:auto;bottom:16px;transform:none;width:44px;height:44px}}
+.pg{position:absolute;inset:0;transform-origin:0 50%;backface-visibility:hidden;will-change:transform;background:var(--paper)}
 .shade{position:absolute;inset:0;pointer-events:none;z-index:5}
 .spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));height:100%}
 .half{position:relative;height:100%;overflow:hidden}
@@ -162,7 +171,11 @@ dl.spec dd{margin:4px 0 0;font-size:14px}
 
 /* ===== Móvil ===== */
 @media(max-width:820px){
- .spread{grid-template-columns:minmax(0,1fr);grid-template-rows:42% 58%}
+ .spread{grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto;height:auto;min-height:100%}
+ .half{height:auto;min-height:46vh}
+ .half.txt{min-height:0;overflow:visible;padding-bottom:96px}
+ .pg>div[style*="height:100%"]{height:auto!important;min-height:100%}
+ .cat{flex:none}
  .spread.rev .half:first-child{order:2}
  .txt{padding:3vh 6vw 9vh;gap:1.6vh}
  .h1{font-size:min(9.5vw,5.4vh)}
@@ -184,6 +197,7 @@ dl.spec dd{margin:4px 0 0;font-size:14px}
 
 <main id="v-revista" class="view">
 <div id="mag"><div class="stage" id="stage"></div></div>
+<button class="nav-arrow" id="prevBtn" style="left:16px" aria-label="Página anterior">‹</button><button class="nav-arrow" id="nextBtn" style="right:16px" aria-label="Página siguiente">›</button>
 <nav class="dots" aria-label="Páginas"><span class="serif" id="pgLabel" style="min-width:58px;font-size:14px">01 / 12</span><div id="dots" style="display:flex;gap:4px"></div></nav>
 </main>
 
@@ -339,7 +353,7 @@ PAGES.push({ name: 'Portada', html: `<img src="img/portada.jpg" alt="Bolso Trenz
 <a href="#" data-go="8"><span class="kick gold">Novedad</span><br><span class="serif" style="font-size:min(4vw,3vh)">Bolsos para tu móvil</span></a>
 <a href="#" data-go="10"><span class="kick gold">Exclusiva</span><br><span class="serif" style="font-size:min(4vw,3vh)">Tu bolso, tejido a tu gusto</span></a>
 </div>
-<div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px"><span class="serif hide-sm" style="font-style:italic;font-size:min(5vw,6vh);line-height:.95;text-align:right">Tejido a mano.<br><span class="gold">Hecho para brillar.</span></span><span class="kick hint">Desliza para pasar página ↓</span></div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px"><span class="serif hide-sm" style="font-style:italic;font-size:min(5vw,6vh);line-height:.95;text-align:right">Tejido a mano.<br><span class="gold">Hecho para brillar.</span></span><span class="kick hint">Desliza para pasar página →</span></div>
 </div></div>` });
 PAGES.push({ name: 'Historia', html: `<div class="spread"><div class="half txt">
 <div class="kick bronze" style="display:flex;justify-content:space-between"><span>Historia</span><span>Elunay · Nº 01</span></div>
@@ -392,31 +406,29 @@ PAGES.push({ name: 'Contraportada', html: `<div class="dark" style="height:100%;
 const N = PAGES.length;
 const stage = $('#stage'), mag = $('#mag');
 stage.innerHTML = PAGES.map((p, i) => `<section class="pg" aria-label="${p.name}" style="z-index:${N - i}">${p.html}<div class="shade"></div></section>`).join('');
-mag.style.height = `calc(var(--vh) * ${N})`;
 $('#dots').innerHTML = PAGES.map((p, i) => `<button aria-label="Ir a ${p.name}" data-go="${i}"></button>`).join('');
-const els = [...stage.children], shades = els.map((e) => e.lastElementChild), dotEls = [...$('#dots').children];
-let ticking = false, lastCur = -1;
+const els = [...stage.children], dotEls = [...$('#dots').children];
+let cur = 0, busy = 0;
 function frame() {
- ticking = false;
- if ($('#v-revista').hidden) return;
- const vh = stage.clientHeight || innerHeight;
- const prog = Math.max(0, Math.min(N - 1, -mag.getBoundingClientRect().top / vh));
- const T = (i) => i >= N - 1 ? 0 : Math.max(0, Math.min(1, prog - i));
- els.forEach((el, i) => {
-  const t = T(i), e = t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
-  el.style.transform = `rotateY(${(-e * 100).toFixed(2)}deg)`;
-  el.style.visibility = t >= 1 ? 'hidden' : 'visible';
-  el.style.boxShadow = t > 0 && t < 1 ? `20px 0 60px rgba(0,0,0,${(.5 * (1 - e)).toFixed(2)})` : 'none';
-  const prev = i > 0 ? T(i - 1) : 1, under = prev > 0 && prev < 1 ? (1 - prev) * .65 : 0, curl = t * .55;
-  shades[i].style.background = under || curl ? `linear-gradient(90deg,rgba(0,0,0,${under.toFixed(3)}),rgba(0,0,0,${(under * .6 + curl * .4).toFixed(3)}) 60%,rgba(0,0,0,${(under * .4 + curl).toFixed(3)}))` : 'none';
- });
- const cur = Math.round(prog);
- if (cur !== lastCur) { lastCur = cur; $('#pgLabel').textContent = String(cur + 1).padStart(2, '0') + ' / ' + N; dotEls.forEach((d, i) => d.classList.toggle('on', i === cur)); }
+ els.forEach((el, i) => { el.classList.toggle('turned', i < cur); el.setAttribute('aria-hidden', i !== cur); el.inert = i !== cur; });
+ $('#pgLabel').textContent = String(cur + 1).padStart(2, '0') + ' / ' + N;
+ dotEls.forEach((d, i) => d.classList.toggle('on', i === cur));
+ $('#prevBtn').disabled = cur === 0; $('#nextBtn').disabled = cur === N - 1;
 }
-const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
-addEventListener('scroll', onScroll, { passive: true });
-addEventListener('resize', onScroll);
-function goPage(i) { const top = mag.getBoundingClientRect().top + scrollY + i * (stage.clientHeight || innerHeight); scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+function goPage(i) {
+ i = Math.max(0, Math.min(N - 1, i)); if (i === cur) return;
+ const turning = i > cur ? els[cur] : els[i];
+ turning.classList.add('turning'); setTimeout(() => turning.classList.remove('turning'), 950);
+ cur = i; els[cur].scrollTop = 0; frame();
+}
+const step = (d) => { const now = Date.now(); if (now - busy < 650) return; busy = now; goPage(cur + d); };
+$('#prevBtn').addEventListener('click', () => goPage(cur - 1));
+$('#nextBtn').addEventListener('click', () => goPage(cur + 1));
+let tx = 0, ty = 0, tt0 = 0;
+stage.addEventListener('touchstart', (e) => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; tt0 = Date.now(); }, { passive: true });
+stage.addEventListener('touchend', (e) => { const dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.3) step(dx < 0 ? 1 : -1); }, { passive: true });
+stage.addEventListener('wheel', (e) => { if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 25) { e.preventDefault(); step(e.deltaX > 0 ? 1 : -1); } }, { passive: false });
+document.addEventListener('keydown', (e) => { if ($('#v-revista').hidden || !$('#quick').hidden || !$('#drawer').hidden || /INPUT|TEXTAREA/.test(document.activeElement.tagName)) return; if (e.key === 'ArrowRight') goPage(cur + 1); if (e.key === 'ArrowLeft') goPage(cur - 1); });
 
 function mgUpdate() { $('#mgMock').innerHTML = mock(cfg, 1.6); $('#mgOpts').innerHTML = optsHTML(cfg, false); }
 
@@ -522,11 +534,11 @@ function route() {
  const h = location.hash.slice(1);
  const isF = h.startsWith('ficha-') && P[h.slice(6)], isE = h === 'encargo';
  if (!$('#v-revista').hidden && (isF || isE)) magScroll = scrollY;
- $('#v-revista').hidden = !!(isF || isE); $('#v-ficha').hidden = !isF; $('#v-encargo').hidden = !isE;
+ $('#v-revista').hidden = !!(isF || isE); document.body.classList.toggle('mag-on', !(isF || isE)); $('#v-ficha').hidden = !isF; $('#v-encargo').hidden = !isE;
  $('#quick').hidden = true;
  if (isF) { renderFicha(h.slice(6)); scrollTo({ top: 0 }); document.title = `${P[h.slice(6)].name} ${P[h.slice(6)].sub} — ElunayBags`; }
  else if (isE) { renderEncargo(); scrollTo({ top: 0 }); document.title = 'Encargo a tu gusto — ElunayBags'; }
- else { document.title = 'ElunayBags — Revista'; requestAnimationFrame(() => { scrollTo({ top: magScroll }); frame(); }); }
+ else { document.title = 'ElunayBags — Revista'; frame(); }
 }
 addEventListener('hashchange', route);
 renderCart(); route(); frame();

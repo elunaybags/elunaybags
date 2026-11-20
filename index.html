@@ -1,0 +1,538 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ElunayBags — Revista</title>
+<meta name="description" content="ElunayBags · Bolsos de autor tejidos a mano. Piezas únicas y encargos a tu gusto.">
+<meta name="theme-color" content="#0E0C0A">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="img/icon-192.png">
+<link rel="apple-touch-icon" href="img/icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Elunay">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Bodoni+Moda:ital,opsz,wght@0,6..96,400;0,6..96,700;1,6..96,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+/* VOICE: maison de lujo, editorial, sereno
+   IDEA: una revista impresa cuyas páginas giran sobre el lomo
+   PICTURE: los bolsos recortados sobre papel crema y champán
+   COLOUR: tinta #0E0C0A, papel #F3EDE4, oro #D4B47C
+   TYPE: Bodoni Moda + Jost; LAYOUT: dobles páginas a pantalla completa */
+:root{--ink:#0E0C0A;--paper:#F3EDE4;--gold:#D4B47C;--bronze:#8A6A3E;--muted:#5A5148;--vh:100vh}
+@supports (height:100dvh){:root{--vh:100dvh}}
+*{box-sizing:border-box;min-width:0}
+html,body{margin:0;background:var(--ink);color:var(--ink);font:300 16px/1.6 Jost,system-ui,sans-serif;overflow-x:clip;-webkit-tap-highlight-color:transparent}
+button{font:inherit;color:inherit;cursor:pointer}
+a{color:inherit;text-decoration:none}
+img{display:block}
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+.serif{font-family:'Bodoni Moda',Georgia,serif;font-weight:400}
+.kick{font-size:11px;letter-spacing:.32em;text-transform:uppercase}
+.gold{color:var(--gold)}.bronze{color:var(--bronze)}
+.view[hidden]{display:none!important}
+
+/* ===== Revista ===== */
+#mag{position:relative}
+.stage{position:sticky;top:0;height:var(--vh);overflow:hidden;perspective:2600px;perspective-origin:0 50%}
+.pg{position:absolute;inset:0;overflow:hidden;transform-origin:0 50%;backface-visibility:hidden;will-change:transform;background:var(--paper)}
+.shade{position:absolute;inset:0;pointer-events:none;z-index:5}
+.spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));height:100%}
+.half{position:relative;height:100%;overflow:hidden}
+.txt{padding:7vh 5vw;display:flex;flex-direction:column;gap:2.4vh;overflow:auto}
+.dark{background:var(--ink);color:var(--paper)}
+.stage-bg{background:radial-gradient(ellipse at 50% 42%,#FBF7F1 0%,#EFE6DA 70%,#E3D6C5 100%)}
+.stage-bg.warm{background:radial-gradient(ellipse at 50% 42%,#F6EEE2 0%,#E4D6C1 60%,#CDB99C 100%)}
+.prod{width:100%;height:100%;object-fit:contain;padding:6vh 3vw;filter:drop-shadow(0 22px 26px rgba(14,12,10,.22));transition:transform 1.2s cubic-bezier(.2,.7,.2,1)}
+.half:hover .prod{transform:scale(1.03)}
+.h1{font-size:min(5.4vw,8.4vh);line-height:.96;margin:0}
+.lead{font-size:min(1.25vw,1.95vh);line-height:1.85;margin:0}
+.folio{margin-top:auto;align-self:flex-end;font-size:12px;letter-spacing:.2em}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border:1px solid currentColor;background:transparent;font-size:11px;letter-spacing:.22em;text-transform:uppercase;transition:background .3s,color .3s}
+.btn.solid{background:var(--gold);border-color:var(--gold);color:var(--ink);font-weight:500}
+.btn.ink{background:var(--ink);border-color:var(--ink);color:var(--paper)}
+.btn:hover{background:var(--gold);border-color:var(--gold);color:var(--ink)}
+.icon-btn{width:48px;height:48px;display:inline-flex;align-items:center;justify-content:center;border:1px solid currentColor;background:transparent}
+.row{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
+dl.spec{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6vh 2vw;padding-top:2vh;border-top:1px solid currentColor}
+dl.spec dt{font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.8}
+dl.spec dd{margin:4px 0 0;font-size:14px}
+.cat{flex:1;min-height:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2.4vh 1.4vw;align-content:start;overflow:auto}
+.cat button{display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:0;border:0;background:transparent;text-align:left}
+.cat .ph{display:block;width:100%;aspect-ratio:1/1}
+.cat img{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 14px 16px rgba(14,12,10,.18));transition:transform .8s}
+.cat button:hover img{transform:scale(1.05)}
+.cat .nm{font-family:'Bodoni Moda',serif;font-size:min(1.3vw,2vh);line-height:1.25;min-height:2.5em;display:block}
+.cat .pr{font-size:12px;color:var(--muted)}
+.dots{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:12px;padding:6px 16px;border-radius:30px;background:rgba(14,12,10,.8);color:var(--paper)}
+.dots button{width:8px;height:40px;border:0;padding:0;background:linear-gradient(rgba(243,237,228,.45),rgba(243,237,228,.45)) center/100% 3px no-repeat;transition:width .3s}
+.dots button.on{width:22px;background:linear-gradient(var(--gold),var(--gold)) center/100% 3px no-repeat}
+.hint{animation:hint 2.2s ease-in-out infinite}
+@keyframes hint{50%{transform:translateY(8px);opacity:1}}
+.swatch{width:44px;height:44px;border-radius:50%;border:1px solid rgba(14,12,10,.25);padding:0}
+.swatch.on{box-shadow:0 0 0 3px var(--paper),0 0 0 4px var(--ink)}
+.pill{min-height:44px;padding:0 18px;border:1px solid currentColor;background:transparent;font-size:12px;letter-spacing:.16em;text-transform:uppercase}
+.pill.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.badge[hidden]{display:none}
+.enc .pill.on,.dark .pill.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+
+/* bolso de vista previa */
+.opts{display:flex;flex-direction:column;gap:10px;width:100%;max-width:560px}
+.orow{display:grid;grid-template-columns:96px minmax(0,1fr);align-items:center;gap:10px}
+.orow .lbl{font-size:10px;letter-spacing:.24em;text-transform:uppercase;color:var(--muted)}
+.enc .orow .lbl,.dark .orow .lbl{color:#A89E92}
+.ops{display:flex;flex-wrap:wrap;gap:6px}
+.op{min-height:34px;padding:0 12px;border:1px solid rgba(14,12,10,.35);background:transparent;font-size:10px;letter-spacing:.14em;text-transform:uppercase;transition:all .25s}
+.op.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.enc .op{border-color:rgba(212,180,124,.4);color:var(--paper)}
+.enc .op.on{background:var(--gold);color:var(--ink);border-color:var(--gold)}
+.sw{width:30px;height:30px;border-radius:50%;border:1px solid rgba(14,12,10,.25);padding:0}
+.sw.on{box-shadow:0 0 0 2px var(--paper),0 0 0 3px var(--ink)}
+.enc .sw{border-color:rgba(243,237,228,.3)}.enc .sw.on{box-shadow:0 0 0 2px var(--ink),0 0 0 3px var(--gold)}
+@media(max-width:600px){.orow{grid-template-columns:minmax(0,1fr);gap:6px}}
+.mockwrap svg{max-width:92%;max-height:80%;height:auto}
+#mgMock{display:flex;align-items:center;justify-content:center;width:100%;height:100%;background:radial-gradient(circle at 50% 55%,rgba(243,237,228,.14),transparent 60%)}
+#mgMock svg{max-width:88%;max-height:86%;height:auto}
+.aside svg{max-width:100%;height:auto}
+.mock{position:relative;display:flex;flex-direction:column;align-items:center}
+.mock .hd,.mock .bag{transition:all .5s ease}
+.mock .bag{border-radius:16px 16px 24px 24px;box-shadow:0 26px 50px rgba(0,0,0,.45),inset 0 -16px 26px rgba(0,0,0,.25);display:flex;align-items:center;justify-content:center}
+.mock .plate{color:var(--ink);font:italic 13px 'Bodoni Moda',serif;padding:5px 16px;border-radius:12px}
+
+/* ===== Barra fija ===== */
+.topbar{position:fixed;top:14px;right:16px;z-index:45;display:flex;gap:8px}
+.topbar button,.topbar a{position:relative;width:48px;height:48px;border-radius:24px;border:1px solid rgba(212,180,124,.6);background:rgba(14,12,10,.78);color:var(--paper);display:flex;align-items:center;justify-content:center}
+.badge{position:absolute;top:-3px;right:-3px;min-width:20px;height:20px;border-radius:10px;background:var(--gold);color:var(--ink);font-size:11px;font-weight:500;display:flex;align-items:center;justify-content:center}
+
+/* ===== Páginas normales (ficha y encargo) ===== */
+.page{min-height:100vh;background:var(--paper)}
+.bar{background:var(--ink);color:var(--paper)}
+.bar .in{max-width:1360px;margin:0 auto;padding:16px 76px 16px max(5vw,16px);display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap}
+.logo{font:700 28px 'Bodoni Moda',serif;letter-spacing:.1em}
+.wrap{max-width:1360px;margin:0 auto;padding:28px max(5vw,16px) 96px}
+.pd{display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start}
+.gal{flex:999 1 520px;display:flex;gap:14px;flex-wrap:wrap-reverse}
+.thumbs{display:flex;flex-direction:column;gap:10px;flex:0 0 80px}
+.thumbs button{width:80px;height:100px;padding:4px;border:0;background:#EBE3D8;outline:1px solid transparent;outline-offset:2px}
+.thumbs button.on{outline-color:var(--ink)}
+.thumbs img{width:100%;height:100%;object-fit:contain}
+.main{flex:1 1 380px;position:relative;height:min(720px,70vh);overflow:hidden;display:flex;align-items:center;justify-content:center}
+.main img{max-width:100%;max-height:100%;object-fit:contain;cursor:zoom-in;transition:transform .6s cubic-bezier(.2,.7,.2,1);filter:drop-shadow(0 22px 26px rgba(14,12,10,.2))}
+.main img.z{transform:scale(1.8);cursor:zoom-out}
+.arrow{position:absolute;top:50%;transform:translateY(-50%);width:48px;height:48px;border-radius:24px;border:0;background:rgba(243,237,228,.92);font-size:20px}
+.info{flex:1 1 360px;display:flex;flex-direction:column;gap:20px}
+@media(min-width:900px){.info{position:sticky;top:24px}}
+.acc button{width:100%;min-height:56px;display:flex;justify-content:space-between;align-items:center;border:0;border-bottom:1px solid #D9CFC3;background:transparent;font:20px 'Bodoni Moda',serif;text-align:left;padding:0}
+.acc p{margin:12px 0 18px;white-space:pre-line;color:#3A342E;font-size:15px}
+.trust{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;padding:14px 0;border-block:1px solid #D9CFC3;font-size:12px;text-align:center}
+.rel{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(220px,100%),1fr));gap:24px}
+.rel a{display:flex;flex-direction:column;gap:10px}
+.rel .ph{display:block;aspect-ratio:1/1}.rel img{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 14px 16px rgba(14,12,10,.18))}
+.enc{background:var(--ink);color:var(--paper)}
+.enc .wrap{display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start}
+.steps{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.steps button{width:100%;min-height:56px;border:0;border-top:2px solid rgba(243,237,228,.2);background:transparent;text-align:left;padding:10px 0;font-size:11px;letter-spacing:.2em;text-transform:uppercase;display:flex;flex-direction:column;gap:4px}
+.steps button.done{border-top-color:var(--gold)}.steps button.cur{color:var(--gold)}
+.models{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:12px}
+.models button{padding:0;border:1px solid rgba(212,180,124,.25);background:#171411;text-align:left}
+.models button.on{border-color:var(--gold);outline:1px solid var(--gold)}
+.models .ph{display:block;aspect-ratio:1/1;background:var(--paper);padding:8px}.models img{width:100%;height:100%;object-fit:contain}
+.models span{display:block;padding:8px;font-family:'Bodoni Moda',serif;min-height:3.2em}
+.field{display:flex;flex-direction:column;gap:8px;font-size:11px;letter-spacing:.3em;text-transform:uppercase;color:#A89E92}
+.field input,.field textarea{font:16px Jost,sans-serif;letter-spacing:0;text-transform:none;color:var(--paper);background:transparent;border:1px solid rgba(212,180,124,.5);padding:14px}
+.aside{flex:1 1 340px;background:#171411;border:1px solid rgba(212,180,124,.3);padding:32px;display:flex;flex-direction:column;align-items:center;gap:24px}
+@media(min-width:900px){.aside{position:sticky;top:24px}}
+.aside dl{margin:0;width:100%;display:grid;grid-template-columns:auto 1fr;gap:8px 16px;font-size:14px}
+.aside dt{color:#A89E92}.aside dd{margin:0;text-align:right}
+
+/* ===== Capas ===== */
+.overlay{position:fixed;inset:0;z-index:60;background:rgba(8,7,6,.72);display:flex;align-items:center;justify-content:center;padding:16px}
+.overlay[hidden]{display:none}
+.dialog{position:relative;width:100%;max-width:940px;max-height:90vh;overflow:auto;background:var(--paper);display:grid;grid-template-columns:repeat(auto-fit,minmax(min(300px,100%),1fr))}
+.dialog .ph{min-height:380px;padding:24px;display:flex;align-items:center;justify-content:center}
+.dialog .ph img{width:100%;max-height:64vh;object-fit:contain;filter:drop-shadow(0 22px 26px rgba(14,12,10,.2))}
+.x{position:absolute;top:8px;right:8px;width:44px;height:44px;border:0;background:transparent;font-size:28px}
+.drawer{position:fixed;inset:0;z-index:65;display:flex;justify-content:flex-end}
+.drawer[hidden]{display:none}
+.drawer .bg{flex:1;border:0;background:rgba(8,7,6,.6)}
+.drawer aside{width:420px;max-width:92vw;height:100%;background:var(--paper);display:flex;flex-direction:column}
+.toast{position:fixed;left:50%;bottom:76px;transform:translateX(-50%);z-index:70;background:var(--ink);color:var(--paper);border:1px solid var(--gold);padding:14px 22px;font-size:13px;letter-spacing:.08em;max-width:90vw}
+.toast[hidden]{display:none}
+
+/* ===== Móvil ===== */
+@media(max-width:820px){
+ .spread{grid-template-columns:minmax(0,1fr);grid-template-rows:42% 58%}
+ .spread.rev .half:first-child{order:2}
+ .txt{padding:3vh 6vw 9vh;gap:1.6vh}
+ .h1{font-size:min(9.5vw,5.4vh)}
+ .lead{font-size:14px;line-height:1.65}
+ .prod{padding:3vh 6vw}
+ .hide-sm{display:none!important}
+ .cat{grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px;padding-bottom:70px}
+ .cat .nm{font-size:13px}
+ .steps{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media(prefers-reduced-motion:reduce){.hint{animation:none}*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+<button id="cartBtn" aria-label="Abrir cesta"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.3" aria-hidden="true"><path d="M5 8h14l-1 13H6L5 8z"/><path d="M9 8V6a3 3 0 016 0v2"/></svg><span class="badge" id="badge" hidden>0</span></button>
+</div>
+
+<main id="v-revista" class="view">
+<div id="mag"><div class="stage" id="stage"></div></div>
+<nav class="dots" aria-label="Páginas"><span class="serif" id="pgLabel" style="min-width:58px;font-size:14px">01 / 12</span><div id="dots" style="display:flex;gap:4px"></div></nav>
+</main>
+
+<div id="v-ficha" class="view page" hidden></div>
+<div id="v-encargo" class="view enc" hidden></div>
+
+<div class="overlay" id="quick" hidden></div>
+<div class="drawer" id="drawer" hidden>
+<button class="bg" aria-label="Cerrar cesta" data-close-cart></button>
+<aside aria-label="Tu cesta">
+<div style="padding:24px 28px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #D9CFC3"><span class="serif" style="font-size:28px">Tu cesta</span><button class="x" style="position:static" aria-label="Cerrar" data-close-cart>×</button></div>
+<div id="cartList" style="flex:1;overflow:auto;padding:20px 28px;display:flex;flex-direction:column;gap:18px"></div>
+<div style="padding:22px 28px;border-top:1px solid #D9CFC3;display:flex;flex-direction:column;gap:10px"><span style="font-size:13px;color:var(--muted)">Envío en caja de regalo incluido</span><a class="btn ink" id="checkout" href="#encargo">Finalizar pedido</a></div>
+</aside>
+</div>
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script>
+{
+const $ = (s, r = document) => r.querySelector(s);
+const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' })[c]);
+const WHATSAPP = '[NUMERO]';
+const EMAIL = '[EMAIL]';
+
+const P = {
+ trenza: { name: 'Trenza', sub: 'Verde petróleo', img: 'img/trenza.webp', gallery: ['img/trenza.webp', 'img/portada.jpg', 'img/trenza-1.jpg', 'img/trenza-2.jpg'], tag: 'Herrajes plateados · Flecos', mat: 'Hilo textil verde petróleo, punto espiga', metal: 'Mosquetones y cadena plateados', wear: 'En la mano o cruzado', story: 'Columnas de punto espiga que dibujan relieve con la luz. Asa acolchada, bandolera trenzada y flecos largos que acompañan cada paso.' },
+ cacao: { name: 'Bicolor', sub: 'Cacao & Crema', img: 'img/cacao.webp', tag: 'Cadena dorada', mat: 'Hilo textil bicolor', metal: 'Cadena dorada', wear: 'Al hombro o en la mano', story: 'Dos tonos que se cruzan en cada punto: el chocolate profundo y el crema luminoso. Su cadena dorada lo lleva del día a la noche sin esfuerzo.' },
+ aros: { name: 'Aros', sub: 'Burdeos & Oro', img: 'img/burdeos.webp', tag: 'Asas de aro dorado', mat: 'Hilo burdeos con hebra dorada', metal: 'Aros dorados', wear: 'En la mano', story: 'Un burdeos intenso atravesado por destellos de oro. Las dobles asas de aro lo convierten en una joya que se lleva en la mano.' },
+ lentejuelas: { name: 'Lentejuelas', sub: 'Arena', img: 'img/arena.webp', tag: 'Lentejuelas iridiscentes', mat: 'Hilo arena con hebra dorada', metal: 'Cadena dorada', wear: 'Al hombro', story: 'Tono arena con hilo dorado y lentejuelas iridiscentes cosidas una a una. Cambia de color con cada movimiento.' },
+ flecos: { name: 'Flecos', sub: 'Blanco', img: 'img/flecos.webp', tag: 'Flecos con cuentas doradas', mat: 'Hilo textil blanco', metal: 'Cadena y cuentas doradas', wear: 'Al hombro', story: 'Blanco luminoso con flecos rematados en cuentas doradas. Perfecto para el verano y las celebraciones.' },
+ noir: { name: 'Noir', sub: 'Negro', img: 'img/noir.webp', tag: 'Cadena doble dorada', mat: 'Hilo satinado negro', metal: 'Cadena doble dorada y borla', wear: 'Al hombro', story: 'El negro satinado que combina con todo. Cadena doble dorada y una borla que pone el punto final. Un clásico desde el primer día.' },
+ bosque: { name: 'Bosque', sub: 'Verde & Crema', img: 'img/bosque.webp', tag: 'Cadenas plateadas', mat: 'Hilo verde bosque y crema', metal: 'Cadenas plateadas', wear: 'En la mano o cruzado', story: 'Bloques de verde bosque y crema, asa acolchada, bandolera trenzada y cadenas plateadas en cascada.' },
+ saten: { name: 'Satén', sub: 'Chocolate', img: 'img/chocolate.webp', tag: 'Cadena entrelazada', mat: 'Hilo satinado chocolate', metal: 'Cadena dorada entrelazada', wear: 'Al hombro', story: 'Hilo satinado chocolate con brillo suave y cadena dorada entrelazada con el mismo hilo.' },
+ terciopelo: { name: 'Terciopelo', sub: 'Tricolor', img: 'img/terciopelo.webp', tag: 'Hilo de terciopelo', mat: 'Terciopelo marrón, negro y blanco', metal: 'Boquilla y cadena dorada', wear: 'Al hombro', story: 'Suave hilo de terciopelo en marrón, negro y blanco con cadena dorada. Calidez de invierno.' },
+ 'movil-oliva': { name: 'Móvil', sub: 'Oliva & Crema', img: 'img/movil-oliva.webp', gallery: ['img/movil-oliva.webp', 'img/movil-oliva-1.jpg', 'img/movil-oliva-2.jpg', 'img/movil-duo.jpg'], tag: 'Bolso para el móvil · Placa plateada', mat: 'Hilo textil verde oliva y crema', metal: 'Mosquetones y placa plateados', wear: 'Cruzado, manos libres', story: 'Tu móvil, siempre a mano y con estilo. Punto en relieve en verde oliva y crema, bandolera trenzada larga para llevarlo cruzado y flecos que le dan movimiento.' },
+ 'movil-burdeos': { name: 'Móvil', sub: 'Burdeos & Crema', img: 'img/movil-burdeos.webp', gallery: ['img/movil-burdeos.webp', 'img/movil-burdeos-1.jpg', 'img/movil-duo.jpg'], tag: 'Bolso para el móvil · Placa dorada', mat: 'Hilo textil burdeos y crema', metal: 'Mosquetones y placa dorados', wear: 'Cruzado, manos libres', story: 'Burdeos y crema entrelazados punto a punto, con bandolera trenzada a juego y detalles dorados. El compañero perfecto para salir solo con lo esencial.' },
+ plata: { name: 'Aro', sub: 'Plata', img: 'img/plata.webp', tag: 'Asa de aro forrada', mat: 'Hilo plateado satinado', metal: 'Asa circular forrada a mano', wear: 'En la mano', story: 'Hilo plateado satinado y asa circular forrada a mano. Escultural y luminoso.' }
+};
+const IDS = Object.keys(P);
+IDS.forEach((k) => { P[k].id = k; if (!P[k].gallery) P[k].gallery = [P[k].img]; });
+const FEATURES = [['cacao', 'Pieza de la temporada', 0], ['trenza', 'Textura en relieve', 1], ['aros', 'Elegancia de noche', 0], ['lentejuelas', 'Pieza statement', 1], ['noir', 'El esencial', 0]];
+const COLORS = [['Verde petróleo', '#0F4A45'], ['Burdeos', '#5E1A22'], ['Chocolate', '#3E2418'], ['Arena', '#B08A62'], ['Noir', '#141210'], ['Marfil', '#EDE4D3'], ['Plata', '#A9ADB3'], ['Blanco', '#F7F5F0']];
+const METALS = [['Oro', '#D4B47C'], ['Plata', '#C9CCD1']];
+const HANDLES = ['Cadena', 'Aro', 'Trenzada'];
+const SIZES = ['Mini', 'Midi', 'Maxi'];
+const TYPES = ['Bolso', 'Para móvil', 'Monedero'];
+const EXTRAS = ['Flecos', 'Lentejuelas', 'Forro estampado'];
+const WHY = [['I.', 'Irrepetible', 'No existen dos bolsos Elunay iguales. Cada uno nace de unas manos y de un momento concretos, y eso lo hace único en el mundo.'], ['II.', 'Tiempo', 'Horas de tejido punto a punto, sin prisas y sin máquinas. Cuando llevas un Elunay, llevas ese tiempo contigo.'], ['III.', 'Para durar', 'Hilos elegidos por su resistencia, herrajes montados uno a uno y la placa grabada como firma. Pensado para acompañarte durante años.']];
+
+/* ---------- estado ---------- */
+const store = { get(k, d) { try { const v = localStorage.getItem('elunay-' + k); return v ? JSON.parse(v) : d; } catch (e) { return d; } }, set(k, v) { try { localStorage.setItem('elunay-' + k, JSON.stringify(v)); } catch (e) {} } };
+let cart = store.get('cart', []);
+let favs = store.get('favs', {});
+const cfg = { type: 0, model: 0, color: 0, color2: 0, metal: 0, handle: 0, size: 1, extras: {}, initials: '', name: '', contact: '', notes: '', step: 0 };
+
+const heart = (on, c) => `<svg width="18" height="18" viewBox="0 0 24 24" fill="${on ? c : 'none'}" stroke="${c}" stroke-width="1.4" aria-hidden="true"><path d="M12 20s-7-4.5-7-10a4 4 0 017-2.6A4 4 0 0119 10c0 5.5-7 10-7 10z"/></svg>`;
+let tt;
+function toast(m) { const t = $('#toast'); t.textContent = '✦ ' + m; t.hidden = false; clearTimeout(tt); tt = setTimeout(() => { t.hidden = true; }, 2600); }
+function renderCart() {
+ const b = $('#badge'); b.hidden = !cart.length; b.textContent = cart.length;
+ $('#cartList').innerHTML = cart.length ? cart.map((id, i) => { const p = P[id]; return `<div style="display:flex;gap:14px;align-items:center"><img src="${p.img}" alt="" style="width:76px;height:96px;object-fit:contain"><div style="flex:1"><div class="serif" style="font-size:19px">${p.name} <i>${p.sub}</i></div><div style="font-size:13px;color:var(--muted)">[PRECIO] €</div></div><button data-rm="${i}" style="min-height:44px;border:0;background:transparent;font-size:11px;letter-spacing:.2em;text-transform:uppercase;text-decoration:underline">Quitar</button></div>`; }).join('') : '<p class="serif" style="margin:40px 0 0;text-align:center;font-size:22px;font-style:italic;color:var(--muted)">Tu próxima pieza favorita te espera.</p>';
+}
+function add(id) { cart.push(id); store.set('cart', cart); renderCart(); toast(P[id].name + ' ' + P[id].sub + ' añadido a tu cesta'); }
+function fav(id) { favs[id] = !favs[id]; store.set('favs', favs); toast(favs[id] ? 'Guardado en tus favoritos' : 'Eliminado de favoritos'); document.querySelectorAll(`[data-fav="${id}"]`).forEach((b) => { b.innerHTML = heart(favs[id], b.dataset.c); b.setAttribute('aria-label', favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'); }); }
+function quick(id) {
+ const p = P[id], q = $('#quick');
+ q.innerHTML = `<div class="dialog" role="dialog" aria-modal="true" aria-label="${p.name} ${p.sub}"><div class="ph stage-bg"><img src="${p.img}" alt="Bolso ${p.name} ${p.sub}"></div><div style="padding:44px 36px;display:flex;flex-direction:column;gap:18px"><span class="kick bronze">${p.tag}</span><h3 class="serif" style="margin:0;font-size:44px;line-height:1.02">${p.name}<br><i>${p.sub}</i></h3><span class="serif bronze" style="font-size:26px">[PRECIO] €</span><p style="margin:0;color:#3A342E">${p.story}</p><div class="row"><button class="btn ink" data-add="${id}" data-closeq>Añadir a la cesta</button><a class="btn" href="#ficha-${id}">Ver ficha</a></div></div><button class="x" aria-label="Cerrar" data-closeq>×</button></div>`;
+ q.hidden = false;
+}
+
+/* ---------- maqueta del bolso ---------- */
+const SECOND = [['Liso', null], ['Crema', '#EFE6D2'], ['Blanco', '#F7F5F0'], ['Oro', '#C9A45F'], ['Negro', '#1A1714']];
+function shade(hex, f) { const n = parseInt(hex.slice(1), 16); let r = n >> 16, g = (n >> 8) & 255, b = n & 255; const t = f < 0 ? 0 : 255, p = Math.abs(f); r = Math.round((t - r) * p + r); g = Math.round((t - g) * p + g); b = Math.round((t - b) * p + b); return '#' + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1); }
+function optsHTML(c, full) {
+ const ops = (arr, key) => arr.map((n, i) => `<button class="op ${(c[key] || 0) === i ? 'on' : ''}" aria-pressed="${(c[key] || 0) === i}" data-cfg="${key}" data-v="${i}">${Array.isArray(n) ? n[0] : n}</button>`).join('');
+ const row = (l, h) => `<div class="orow"><span class="lbl">${l}</span><div class="ops">${h}</div></div>`;
+ let h = row('Pieza', ops(TYPES, 'type'));
+ h += row('Hilo', COLORS.slice(0, full ? 8 : 6).map((k, i) => `<button class="sw ${c.color === i ? 'on' : ''}" style="background:${k[1]}" aria-label="Hilo ${k[0]}" aria-pressed="${c.color === i}" data-cfg="color" data-v="${i}" title="${k[0]}"></button>`).join(''));
+ h += row('Combinar', ops(SECOND, 'color2'));
+ h += row('Herrajes', ops(METALS, 'metal'));
+ if (c.type !== 2) h += row(c.type === 1 ? 'Bandolera' : 'Asa', ops(HANDLES, 'handle'));
+ if (c.type === 0) h += row('Tamaño', ops(SIZES, 'size'));
+ if (full) {
+  h += row('Extras', EXTRAS.map((e) => `<button class="op ${c.extras[e] ? 'on' : ''}" aria-pressed="${!!c.extras[e]}" data-cfg="extra" data-v="${e}">${e}</button>`).join(''));
+  h += `<div class="orow"><label class="lbl" for="fIni">Iniciales</label><div class="ops"><input id="fIni" maxlength="3" value="${esc(c.initials)}" placeholder="A·R" style="width:110px;height:34px;padding:0 10px;border:1px solid rgba(212,180,124,.5);background:transparent;color:inherit;font:16px 'Bodoni Moda',serif;letter-spacing:.2em;text-transform:uppercase"></div></div>`;
+ }
+ return `<div class="opts">${h}</div>`;
+}
+const pieceName = (c) => c.type === 0 ? 'Bolso ' + SIZES[c.size] : TYPES[c.type] === 'Para móvil' ? 'Bolso para móvil' : 'Monedero';
+let mockId = 0;
+function mock(c, scale) {
+ const id = 'm' + (++mockId);
+ const col = COLORS[c.color][1], col2 = (SECOND[c.color2 || 0] || SECOND[0])[1], met = METALS[c.metal][1];
+ const sz = c.type === 0 ? [0.8, 1, 1.2][c.size] : 1, W = 300, H = 400;
+ const bw = c.type === 1 ? 118 : c.type === 2 ? 170 : 200 * sz, bh = c.type === 1 ? 182 : c.type === 2 ? 104 : 150 * sz, bx = (W - bw) / 2, by = H - 40 - bh;
+ const arc = c.type === 1 ? 210 : 150 * sz;
+ const dark = shade(col, -0.35), light = shade(col, 0.18);
+ const metD = shade(met, -0.35), metL = shade(met, 0.45);
+ const sw = 22, sh = 15;
+ let st = '';
+ for (let r = 0, y = by + 14; y < by + bh + sh; r++, y += sh) {
+  for (let x = bx - sw + (r % 2 ? sw / 2 : 0); x < bx + bw + sw; x += sw) {
+   const a = col2 && (Math.floor(x / sw) + r) % 2 ? col2 : col, b2 = col2 ? (a === col ? col2 : col) : shade(col, -0.08);
+   st += `<g><ellipse cx="${(x - 5).toFixed(1)}" cy="${y.toFixed(1)}" rx="7.5" ry="10" transform="rotate(-32 ${(x - 5).toFixed(1)} ${y.toFixed(1)})" fill="${a}" stroke="${shade(a, -0.4)}" stroke-width="1"/><ellipse cx="${(x + 5).toFixed(1)}" cy="${y.toFixed(1)}" rx="7.5" ry="10" transform="rotate(32 ${(x + 5).toFixed(1)} ${y.toFixed(1)})" fill="${b2}" stroke="${shade(b2, -0.4)}" stroke-width="1"/><ellipse cx="${(x - 6).toFixed(1)}" cy="${(y - 3).toFixed(1)}" rx="2.4" ry="5" transform="rotate(-32 ${(x - 6).toFixed(1)} ${(y - 3).toFixed(1)})" fill="#fff" opacity=".18"/></g>`;
+  }
+ }
+ let rim = '';
+ for (let x = bx + 6; x < bx + bw - 4; x += 12) rim += `<ellipse cx="${x}" cy="${by + 2}" rx="8" ry="5.5" transform="rotate(-25 ${x} ${by + 2})" fill="${light}" stroke="${dark}" stroke-width="1"/>`;
+ const lx = bx + 14, rx = bx + bw - 14;
+ let strap = '';
+ if (c.handle === 0) {
+  for (let i = 0; i <= 26; i++) { const t = i / 26, x = lx + (rx - lx) * t, y = by - Math.sin(Math.PI * t) * arc; strap += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="${i % 2 ? 6 : 4}" ry="${i % 2 ? 3.5 : 5.5}" fill="none" stroke="url(#${id}g)" stroke-width="2.4"/>`; }
+ } else if (c.handle === 1) {
+  const R = 46 * sz; strap = `<circle cx="${W / 2 - 16}" cy="${by - R + 10}" r="${R}" fill="none" stroke="url(#${id}g)" stroke-width="6"/><circle cx="${W / 2 + 16}" cy="${by - R + 14}" r="${R}" fill="none" stroke="url(#${id}g)" stroke-width="6"/>`;
+ } else {
+  for (let i = 0; i <= 30; i++) { const t = i / 30, x = lx + (rx - lx) * t, y = by - Math.sin(Math.PI * t) * arc * 0.93, ang = Math.cos(Math.PI * t) * 60, k = i % 2 ? 1 : -1; const cc = col2 && i % 4 < 2 ? col2 : col; strap += `<ellipse cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" rx="9" ry="5.5" transform="rotate(${(ang + k * 35).toFixed(0)} ${x.toFixed(1)} ${y.toFixed(1)})" fill="${cc}" stroke="${shade(cc, -0.4)}" stroke-width="1"/>`; }
+ }
+ if (c.type === 2) { strap = `<path d="M${W / 2 + 40} ${by + 4} q 46 -10 52 -58 q 4 -34 -26 -30" fill="none" stroke="${col2 || col}" stroke-width="9" stroke-linecap="round"/><circle cx="${W / 2 + 40}" cy="${by + 2}" r="7" fill="none" stroke="url(#${id}g)" stroke-width="3"/>`; }
+ const zip = c.type === 2 ? `<rect x="${bx + 8}" y="${by + 6}" width="${bw - 16}" height="5" rx="2" fill="url(#${id}g)"/><rect x="${bx + 18}" y="${by + 4}" width="7" height="16" rx="2" fill="url(#${id}g)" stroke="${metD}" stroke-width=".8"/>` : '';
+ const rings = c.type !== 2 && c.handle !== 1 ? `<circle cx="${lx}" cy="${by - 2}" r="6" fill="none" stroke="url(#${id}g)" stroke-width="3"/><circle cx="${rx}" cy="${by - 2}" r="6" fill="none" stroke="url(#${id}g)" stroke-width="3"/>` : '';
+ let fr = '';
+ if (c.extras && c.extras.Flecos) { for (let i = 0; i < 14; i++) { const x = bx + 12 + i * (bw - 24) / 13; fr += `<path d="M${x} ${by + bh - 6} q ${i % 2 ? 3 : -3} 22 ${i % 3 - 1} 46" stroke="${i % 2 && col2 ? col2 : col}" stroke-width="5" stroke-linecap="round" fill="none"/>`; } }
+ let sq = '';
+ if (c.extras && c.extras.Lentejuelas) { for (let i = 0; i < 16; i++) { const x = bx + 20 + ((i * 37) % (bw - 40)), y = by + 40 + ((i * 53) % (bh - 60)); sq += `<circle cx="${x}" cy="${y}" r="7" fill="url(#${id}s)" stroke="#fff" stroke-opacity=".6" stroke-width="1"/>`; } }
+ const plate = c.initials ? c.initials.split('').join('·') : 'Elunay Bag';
+ const pw = c.type === 1 ? 92 : 100, ph = 24, px = W / 2 - pw / 2, py = by + (c.type === 2 ? 40 : 26);
+ return `<svg viewBox="0 0 ${W} ${H}" width="${Math.round(W * scale)}" height="${Math.round(H * scale)}" role="img" aria-label="Vista previa del bolso" style="overflow:visible">
+<defs><clipPath id="${id}c"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" rx="18"/></clipPath>
+<linearGradient id="${id}g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="${metL}"/><stop offset=".5" stop-color="${met}"/><stop offset="1" stop-color="${metD}"/></linearGradient>
+<linearGradient id="${id}s" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#bfe8e0"/><stop offset=".5" stop-color="#d8c8f0"/><stop offset="1" stop-color="#9fd6b8"/></linearGradient>
+<linearGradient id="${id}v" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".35"/></linearGradient></defs>
+<ellipse cx="${W / 2}" cy="${by + bh + 8}" rx="${bw * 0.55}" ry="10" fill="#000" opacity=".35"/>
+${strap}${rings}
+<g clip-path="url(#${id}c)"><rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="${dark}"/>${st}<rect x="${bx}" y="${by}" width="${bw}" height="${bh}" fill="url(#${id}v)"/></g>
+${rim}${zip}${sq}${fr}
+<g><rect x="${px}" y="${py}" width="${pw}" height="${ph}" rx="12" fill="url(#${id}g)" stroke="${metD}" stroke-width="1"/><circle cx="${px + 9}" cy="${py + ph / 2}" r="2" fill="${metD}"/><circle cx="${px + pw - 9}" cy="${py + ph / 2}" r="2" fill="${metD}"/>
+<text x="${W / 2 - (c.initials ? 0 : 4)}" y="${py + 16}" text-anchor="middle" font-family="'Bodoni Moda',serif" font-style="italic" font-size="${c.initials ? 13 : 11}" fill="#1a1714">${esc(plate)}</text>${c.initials ? '' : `<path d="M${px + pw - 14} ${py + 8} c-1.5-2 -4 -.5 -2.5 1.5 l2.5 2.5 2.5-2.5 c1.5-2 -1-3.5 -2.5-1.5z" fill="none" stroke="#1a1714" stroke-width=".8"/>`}</g>
+</svg>`;
+}
+
+/* ---------- revista ---------- */
+const btnsFor = (id, dark) => { const c = dark ? '#D4B47C' : '#8A6A3E'; return `<div class="row" style="margin-top:auto"><span class="serif" style="font-size:26px;color:${c};margin-right:8px">[PRECIO] €</span><button class="icon-btn" data-fav="${id}" data-c="${c}" aria-label="${favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${heart(favs[id], c)}</button><button class="btn solid" data-add="${id}">Añadir</button><a class="btn" href="#ficha-${id}">Ver ficha</a></div>`; };
+const PAGES = [];
+PAGES.push({ name: 'Portada', html: `<img src="img/portada.jpg" alt="Bolso Trenza verde petróleo, portada de la revista Elunay" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover"><div style="position:absolute;inset:0;background:linear-gradient(180deg,rgba(14,12,10,.6) 0%,rgba(14,12,10,0) 32%,rgba(14,12,10,0) 52%,rgba(14,12,10,.88) 100%)"></div>
+<div style="position:relative;height:100%;padding:3vh 4vw 11vh;display:flex;flex-direction:column;color:var(--paper)">
+<div class="kick" style="display:flex;justify-content:space-between;gap:8px"><span>Nº 01 · Invierno 2026</span><span class="hide-sm">Edición Atelier</span></div>
+<h1 class="serif" style="margin:1vh 0 0;font-weight:700;font-size:min(19vw,28vh);line-height:.82;text-align:center;letter-spacing:.02em">ELUNAY</h1>
+<p class="kick gold" style="margin:8px 0 0;text-align:center;letter-spacing:.5em">La revista de los bolsos tejidos a mano</p>
+<div style="flex:1"></div>
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:20px">
+<div style="display:flex;flex-direction:column;gap:2vh;max-width:460px">
+<a href="#" data-go="1"><span class="kick gold">Historia</span><br><span class="serif" style="font-size:min(5vw,4.2vh);line-height:1.05">Lo que una máquina <i>nunca sabrá hacer</i></span></a>
+<a href="#" data-go="8"><span class="kick gold">Novedad</span><br><span class="serif" style="font-size:min(4vw,3vh)">Bolsos para tu móvil</span></a>
+<a href="#" data-go="10"><span class="kick gold">Exclusiva</span><br><span class="serif" style="font-size:min(4vw,3vh)">Tu bolso, tejido a tu gusto</span></a>
+</div>
+<div style="display:flex;flex-direction:column;align-items:flex-end;gap:12px"><span class="serif hide-sm" style="font-style:italic;font-size:min(5vw,6vh);line-height:.95;text-align:right">Tejido a mano.<br><span class="gold">Hecho para brillar.</span></span><span class="kick hint">Desliza para pasar página ↓</span></div>
+</div></div>` });
+PAGES.push({ name: 'Historia', html: `<div class="spread"><div class="half txt">
+<div class="kick bronze" style="display:flex;justify-content:space-between"><span>Historia</span><span>Elunay · Nº 01</span></div>
+<h2 class="serif h1">Lo que una máquina <i class="bronze">nunca sabrá hacer</i></h2>
+<p class="lead"><span class="serif bronze" style="float:left;font-size:4.2em;line-height:.8;padding:6px 12px 0 0">U</span>na máquina fabrica cientos de bolsos idénticos en una hora. En el atelier tardamos horas en tejer uno solo. Ahí está precisamente su valor: cada punto lo decide una mano, no un programa.</p>
+<p class="lead">Un bolso tejido a mano guarda el ritmo de quien lo hizo: la tensión del hilo, la paciencia de cada vuelta y las pequeñas variaciones que lo convierten en irrepetible. No es un defecto, es su firma.</p>
+<p class="lead">Por eso un Elunay no se compra para una temporada. Se elige para acompañarte, y con el tiempo acaba contando también tu historia.</p>
+<span class="folio bronze">— 02 —</span></div>
+<div class="half stage-bg"><img class="prod" src="img/chocolate.webp" alt="Bolso Satén chocolate" style="height:72%"><div style="position:absolute;left:4vw;right:4vw;bottom:4vh;background:rgba(243,237,228,.94);padding:2.6vh 2.4vw"><p class="serif" style="margin:0;font-style:italic;font-size:min(4.6vw,3vh);line-height:1.3">“El verdadero lujo es aquello que no se puede repetir.”</p><span class="kick bronze">La Maison Elunay</span></div></div></div>` });
+PAGES.push({ name: 'Hecho a mano', html: `<div class="spread dark"><div class="half txt" style="justify-content:center">
+<span class="kick gold">El sentido de lo hecho a mano</span>
+<h2 class="serif h1">Del ovillo<br><i class="gold">a tus manos</i></h2>
+<div role="tablist" aria-label="Por qué es especial" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;border-top:1px solid rgba(212,180,124,.3);padding-top:2vh">${WHY.map((w, i) => `<button role="tab" data-why="${i}" aria-selected="${i === 0}" style="min-height:44px;border:0;border-top:2px solid ${i === 0 ? 'var(--gold)' : 'transparent'};background:transparent;text-align:left;padding:10px 8px;display:flex;flex-direction:column;gap:4px"><span class="serif gold" style="font-size:20px">${w[0]}</span><span style="font-size:13px">${w[1]}</span></button>`).join('')}</div>
+<p class="serif" id="whyText" style="margin:0;min-height:12vh;font-style:italic;font-size:min(4.4vw,2.6vh);line-height:1.6;color:#E8DFD2">${WHY[0][2]}</p>
+<span class="folio gold">— 03 —</span></div>
+<div class="half"><img class="prod" src="img/flecos.webp" alt="Bolso Flecos blanco con cadena dorada" style="filter:drop-shadow(0 24px 30px rgba(0,0,0,.55))"></div></div>` });
+FEATURES.forEach(([id, kicker, dark], k) => { const p = P[id], a = dark ? 'gold' : 'bronze';
+ PAGES.push({ name: p.name, html: `<div class="spread ${dark ? 'dark' : ''}"><div class="half stage-bg ${dark ? 'warm' : ''}"><img class="prod" src="${p.img}" alt="Bolso ${p.name} ${p.sub}"><span class="kick" style="position:absolute;top:2.6vh;left:2.6vw;background:var(--ink);color:var(--gold);padding:9px 12px">Las piezas · ${k + 1} / 5</span></div>
+<div class="half txt"><span class="kick ${a}">${kicker}</span><h2 class="serif h1">${p.name}<br><i class="${a}">${p.sub}</i></h2><p class="lead" style="opacity:.88">${p.story}</p>
+<dl class="spec hide-sm" style="border-color:${dark ? 'rgba(212,180,124,.4)' : 'rgba(14,12,10,.3)'}"><div><dt class="${a}">Tejido</dt><dd>${p.mat}</dd></div><div><dt class="${a}">Herrajes</dt><dd>${p.metal}</dd></div><div><dt class="${a}">Cómo llevarlo</dt><dd>${p.wear}</dd></div><div><dt class="${a}">Medidas · Tejido</dt><dd>[MEDIDAS] · [HORAS] h</dd></div></dl>
+${btnsFor(id, dark)}<button class="btn" data-go="10" style="align-self:flex-start">Crear a mi gusto</button><span class="folio ${a}">— ${String(k + 4).padStart(2, '0')} —</span></div></div>` }); });
+PAGES.push({ name: 'Para tu móvil', html: `<div class="spread"><div class="half"><img src="img/movil-duo.jpg" alt="Bolsos para el móvil en burdeos y en verde oliva" style="width:100%;height:100%;object-fit:cover"><span class="kick" style="position:absolute;top:2.6vh;left:2.6vw;background:var(--ink);color:var(--gold);padding:9px 12px">Novedad</span></div>
+<div class="half txt"><span class="kick bronze">Nueva línea</span><h2 class="serif h1">Para tu <i class="bronze">móvil</i></h2>
+<p class="lead" style="color:#3A342E">Manos libres, móvil siempre a mano. Bolsitos tejidos a mano con bandolera trenzada larga para llevar cruzados, con nuestra placa grabada.</p>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2vw;flex:1;min-height:0">${['movil-oliva', 'movil-burdeos'].map((id) => `<div style="display:flex;flex-direction:column;gap:8px;min-height:0"><button data-quick="${id}" class="stage-bg" style="flex:1;min-height:120px;border:0;padding:0"><img src="${P[id].img}" alt="Bolso ${P[id].name} ${P[id].sub}" style="width:100%;height:100%;object-fit:contain;padding:10px;filter:drop-shadow(0 14px 16px rgba(14,12,10,.2))"></button><span class="serif" style="font-size:min(4.4vw,2.6vh)">${P[id].sub}</span><span style="font-size:13px;color:var(--muted)">[PRECIO] €</span><div class="row" style="gap:6px"><button class="btn solid" style="min-height:44px;padding:0 14px" data-add="${id}">Añadir</button><a class="btn" style="min-height:44px;padding:0 14px" href="#ficha-${id}">Ficha</a></div></div>`).join('')}</div>
+<span class="folio bronze">— 09 —</span></div></div>` });
+PAGES.push({ name: 'Catálogo', html: `<div style="height:100%;padding:5vh 4vw 10vh;display:flex;flex-direction:column;gap:2.4vh">
+<div style="display:flex;flex-wrap:wrap;justify-content:space-between;align-items:flex-end;gap:12px;border-bottom:1px solid var(--ink);padding-bottom:1.6vh"><div><span class="kick bronze">Catálogo · Invierno 2026</span><h2 class="serif" style="margin:4px 0 0;font-size:min(8vw,6.8vh);line-height:1">Toda la <i class="bronze">colección</i></h2></div><button class="btn" data-go="10">Todas se tejen a tu gusto →</button></div>
+<div class="cat">${IDS.map((id) => `<button data-quick="${id}"><span class="ph"><img src="${P[id].img}" alt="Bolso ${P[id].name} ${P[id].sub}" loading="lazy"></span><span class="nm">${P[id].name}<br><i>${P[id].sub}</i></span><span class="pr">[PRECIO] €</span></button>`).join('')}</div></div>` });
+PAGES.push({ name: 'A tu gusto', html: `<div class="spread"><div class="half txt" style="justify-content:center">
+<span class="kick bronze">Lo que nos hace únicos</span>
+<h2 class="serif h1">Tejido <i class="bronze">a tu gusto</i></h2>
+<p class="lead" style="color:#3A342E">Cualquier pieza de esta revista puede tejerse para ti. Tú eliges el hilo, los herrajes, el asa y el tamaño, y grabamos tus iniciales en la placa. Nadie más tendrá un bolso igual.</p>
+<div id="mgOpts">${optsHTML(cfg, false)}</div>
+<div class="row"><a class="btn ink" href="#encargo">Encargar mi pieza →</a><span style="font-size:13px;color:var(--muted)">Desde [PRECIO] € · Lista en [DÍAS] días</span></div></div>
+<div class="half dark" style="display:flex;align-items:center;justify-content:center;background:#171411"><div id="mgMock">${mock(cfg, 1.6)}</div><span class="folio gold" style="position:absolute;bottom:3vh;right:3vw">— 11 —</span></div></div>` });
+PAGES.push({ name: 'La artesana', html: `<div class="spread rev"><div class="half" style="background:#E6DDD2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:4vw;color:#6B5F52"><span class="kick">[Foto de la artesana tejiendo]</span><span style="font-size:13px;max-width:320px">Una foto real de quien teje cada Elunay genera más confianza que cualquier texto.</span></div>
+<div class="half txt"><span class="kick bronze">La artesana</span><h2 class="serif h1">Las manos <i class="bronze">detrás de Elunay</i></h2>
+<p class="lead" style="color:#3A342E">[Tu historia en primera persona: quién eres, cuándo empezaste a tejer, qué significa Elunay y por qué cada bolso lleva tu placa.]</p>
+<div style="display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.8vh 2vw;border-top:1px solid var(--ink);padding-top:2vh">${[['Pago seguro', 'Tarjeta, Bizum y [MÉTODOS]'], ['Envío en caja regalo', '[PLAZO] días a toda España'], ['Devoluciones', '[DÍAS] días en piezas de catálogo'], ['Trato directo', 'Hablas siempre con quien teje tu bolso']].map((t) => `<div><div class="serif" style="font-size:19px">${t[0]}</div><div style="font-size:13px;color:var(--muted)">${t[1]}</div></div>`).join('')}</div>
+<span class="folio bronze">— 12 —</span></div></div>` });
+PAGES.push({ name: 'Contraportada', html: `<div class="dark" style="height:100%;padding:8vh 6vw 11vh;display:flex;flex-direction:column;align-items:center;gap:3vh;text-align:center">
+<span class="kick gold">Le Cercle</span><h2 class="serif" style="margin:0;font-size:min(9vw,8vh);line-height:1">Recibe el <i class="gold">próximo número</i></h2>
+<p style="margin:0;max-width:540px;color:#CFC6BB">Acceso privado a cada nueva pieza antes que nadie y a las ediciones limitadas del atelier.</p>
+<form id="nl" style="display:flex;flex-wrap:wrap;width:100%;max-width:600px;border-bottom:1px solid var(--gold)"><label for="nlEmail" style="position:absolute;left:-9999px">Email</label><input id="nlEmail" type="email" required placeholder="Tu email" style="flex:1;min-width:180px;height:56px;border:0;background:transparent;color:var(--paper);font:16px Jost,sans-serif"><button class="gold" style="min-height:56px;border:0;background:transparent;font-size:12px;letter-spacing:.3em;text-transform:uppercase">Suscribirme →</button></form>
+<div style="flex:1"></div><span class="serif" style="font-weight:700;font-size:min(16vw,16vh);line-height:.8">ELUNAY</span>
+<nav style="display:flex;flex-wrap:wrap;justify-content:center;gap:22px;font-size:13px;color:#CFC6BB"><span>Envíos y devoluciones</span><span>Cuidado del bolso</span><a href="#encargo">Encargos</a><span>Instagram</span><span>Aviso legal</span></nav>
+<span style="font-size:12px;color:#8F857A">© 2026 ElunayBags · Maison Handmade</span></div>` });
+
+const N = PAGES.length;
+const stage = $('#stage'), mag = $('#mag');
+stage.innerHTML = PAGES.map((p, i) => `<section class="pg" aria-label="${p.name}" style="z-index:${N - i}">${p.html}<div class="shade"></div></section>`).join('');
+mag.style.height = `calc(var(--vh) * ${N})`;
+$('#dots').innerHTML = PAGES.map((p, i) => `<button aria-label="Ir a ${p.name}" data-go="${i}"></button>`).join('');
+const els = [...stage.children], shades = els.map((e) => e.lastElementChild), dotEls = [...$('#dots').children];
+let ticking = false, lastCur = -1;
+function frame() {
+ ticking = false;
+ if ($('#v-revista').hidden) return;
+ const vh = stage.clientHeight || innerHeight;
+ const prog = Math.max(0, Math.min(N - 1, -mag.getBoundingClientRect().top / vh));
+ const T = (i) => i >= N - 1 ? 0 : Math.max(0, Math.min(1, prog - i));
+ els.forEach((el, i) => {
+  const t = T(i), e = t < .5 ? 2 * t * t : 1 - (-2 * t + 2) ** 2 / 2;
+  el.style.transform = `rotateY(${(-e * 100).toFixed(2)}deg)`;
+  el.style.visibility = t >= 1 ? 'hidden' : 'visible';
+  el.style.boxShadow = t > 0 && t < 1 ? `20px 0 60px rgba(0,0,0,${(.5 * (1 - e)).toFixed(2)})` : 'none';
+  const prev = i > 0 ? T(i - 1) : 1, under = prev > 0 && prev < 1 ? (1 - prev) * .65 : 0, curl = t * .55;
+  shades[i].style.background = under || curl ? `linear-gradient(90deg,rgba(0,0,0,${under.toFixed(3)}),rgba(0,0,0,${(under * .6 + curl * .4).toFixed(3)}) 60%,rgba(0,0,0,${(under * .4 + curl).toFixed(3)}))` : 'none';
+ });
+ const cur = Math.round(prog);
+ if (cur !== lastCur) { lastCur = cur; $('#pgLabel').textContent = String(cur + 1).padStart(2, '0') + ' / ' + N; dotEls.forEach((d, i) => d.classList.toggle('on', i === cur)); }
+}
+const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(frame); } };
+addEventListener('scroll', onScroll, { passive: true });
+addEventListener('resize', onScroll);
+function goPage(i) { const top = mag.getBoundingClientRect().top + scrollY + i * (stage.clientHeight || innerHeight); scrollTo({ top, behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }); }
+
+function mgUpdate() { $('#mgMock').innerHTML = mock(cfg, 1.6); $('#mgOpts').innerHTML = optsHTML(cfg, false); }
+
+/* ---------- ficha ---------- */
+function renderFicha(id) {
+ const p = P[id]; let gi = 0, open = 0, strap = 2;
+ const acc = [['Detalles de la pieza', `Tejido: ${p.mat}\nHerrajes: ${p.metal}\nCómo llevarlo: ${p.wear}\nFirma: placa grabada Elunay`], ['Medidas', 'Ancho: [CM] cm · Alto: [CM] cm · Fondo: [CM] cm\nLargo del asa: [CM] cm'], ['Cuidados', 'Guárdalo relleno y dentro de su bolsa para que conserve la forma.\nEvita la humedad y la luz solar directa durante mucho tiempo.\n[Añade tus recomendaciones de lavado]'], ['Envío y devoluciones', 'Envío en [PLAZO] días laborables, en caja de regalo.\nDevoluciones en [DÍAS] días (las piezas personalizadas no admiten devolución).']];
+ const rel = IDS.filter((k) => k !== id).slice(0, 4);
+ const v = $('#v-ficha');
+ const draw = () => {
+  v.innerHTML = `<header class="bar"><div class="in"><a href="#revista" class="kick">← Revista</a><a href="#revista" class="logo">ELUNAY</a><span style="width:48px"></span></div></header>
+<div class="wrap"><nav style="font-size:12px;letter-spacing:.14em;color:var(--muted);margin-bottom:22px"><a href="#revista">Revista</a> / Catálogo / ${p.name} ${p.sub}</nav>
+<div class="pd"><div class="gal"><div class="thumbs" role="tablist" aria-label="Galería">${p.gallery.map((g, i) => `<button role="tab" class="${i === gi ? 'on' : ''}" aria-selected="${i === gi}" data-gi="${i}" aria-label="Foto ${i + 1}"><img src="${g}" alt=""></button>`).join('')}</div>
+<div class="main stage-bg"><img id="mainImg" src="${p.gallery[gi]}" alt="Bolso ${p.name} ${p.sub}, foto ${gi + 1}">${p.gallery.length > 1 ? '<button class="arrow" style="left:10px" data-gstep="-1" aria-label="Foto anterior">‹</button><button class="arrow" style="right:10px" data-gstep="1" aria-label="Foto siguiente">›</button>' : ''}</div></div>
+<div class="info"><span class="kick bronze">Pieza única · Tejida a mano</span><h1 class="serif" style="margin:0;font-size:clamp(40px,5vw,56px);line-height:.98">${p.name}<br><i class="bronze">${p.sub}</i></h1>
+<div class="row" style="align-items:baseline"><span class="serif" style="font-size:30px">[PRECIO] €</span><span style="font-size:13px;color:var(--muted)">IVA incluido · Caja de regalo</span></div>
+<p style="margin:0;color:#3A342E">${p.story} Firmado con la placa grabada Elunay.</p>
+<div><span class="kick" style="color:var(--muted)">Cómo lo quieres llevar</span><div class="row" style="margin-top:10px">${['Asa de mano', 'Bandolera', 'Ambas'].map((o, i) => `<button class="pill ${i === strap ? 'on' : ''}" data-strap="${i}" aria-pressed="${i === strap}">${o}</button>`).join('')}</div></div>
+<div class="row" style="flex-wrap:nowrap"><button class="btn ink" style="flex:1;min-height:56px" data-add="${id}">Añadir a la cesta</button><button class="icon-btn" style="width:56px;height:56px" data-fav="${id}" data-c="#8A6A3E" aria-label="${favs[id] ? 'Quitar de favoritos' : 'Añadir a favoritos'}">${heart(favs[id], '#8A6A3E')}</button></div>
+<a class="btn" href="#encargo" style="color:var(--bronze)">Quiero este modelo a mi gusto →</a>
+<div class="trust"><span>Pago seguro</span><span>Envío [PLAZO] días</span><span>Devolución [DÍAS] días</span></div>
+<div class="acc">${acc.map((a, i) => `<button aria-expanded="${i === open}" data-acc="${i}">${a[0]}<span class="bronze" style="font:22px Jost">${i === open ? '−' : '+'}</span></button>${i === open ? `<p>${a[1]}</p>` : ''}`).join('')}</div></div></div>
+<section style="margin-top:88px;display:flex;flex-direction:column;gap:28px"><h2 class="serif" style="margin:0;font-size:clamp(32px,4vw,44px)">También te <i class="bronze">enamorará</i></h2><div class="rel">${rel.map((k) => `<a href="#ficha-${k}"><span class="ph stage-bg"><img src="${P[k].img}" alt="Bolso ${P[k].name} ${P[k].sub}" loading="lazy"></span><span class="serif" style="font-size:21px">${P[k].name} <i>${P[k].sub}</i></span><span style="font-size:14px;color:var(--muted)">[PRECIO] €</span></a>`).join('')}</div></section></div>`;
+ };
+ draw();
+ v.onclick = (e) => {
+  const t = e.target.closest('button,img'); if (!t) return;
+  if (t.dataset.gi) { gi = +t.dataset.gi; draw(); }
+  else if (t.dataset.gstep) { gi = (gi + +t.dataset.gstep + p.gallery.length) % p.gallery.length; draw(); }
+  else if (t.dataset.acc) { open = open === +t.dataset.acc ? -1 : +t.dataset.acc; draw(); }
+  else if (t.dataset.strap) { strap = +t.dataset.strap; draw(); }
+  else if (t.id === 'mainImg') t.classList.toggle('z');
+ };
+}
+
+/* ---------- encargo ---------- */
+function renderEncargo() {
+ const v = $('#v-encargo');
+ const c = cfg, col = COLORS[c.color], met = METALS[c.metal];
+ const ex = EXTRAS.filter((e) => c.extras[e]); const exT = ex.length ? ex.join(', ') : 'Ninguno';
+ const model = P[IDS[c.model]];
+ const msg = `Hola Elunay, quiero encargar un bolso a mi gusto:\n- Modelo: ${model.name} ${model.sub}\n- Hilo: ${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}\n- Herrajes: ${met[0]}\n- Pieza: ${pieceName(c)}\n${c.type !== 2 ? '- Asa: ' + HANDLES[c.handle] + '\n' : ''}- Extras: ${exT}\n- Iniciales: ${c.initials || '—'}\n- Nombre: ${c.name || '—'}\n- Contacto: ${c.contact || '—'}\n- Notas: ${c.notes || '—'}${cart.length ? '\n- En mi cesta: ' + cart.map((k) => P[k].name + ' ' + P[k].sub).join(', ') : ''}`;
+ const pills = (arr, key) => arr.map((n, i) => `<button class="pill ${c[key] === i ? 'on' : ''}" aria-pressed="${c[key] === i}" data-set="${key}" data-v="${i}">${Array.isArray(n) ? n[0] : n}</button>`).join('');
+ const step = [
+  `<h2 class="serif" style="margin:0;font-size:30px">Elige el modelo base</h2><div class="models">${IDS.map((k, i) => `<button class="${c.model === i ? 'on' : ''}" aria-pressed="${c.model === i}" data-set="model" data-v="${i}"><span class="ph"><img src="${P[k].img}" alt="" loading="lazy"></span><span>${P[k].name} <i>${P[k].sub}</i></span></button>`).join('')}</div>`,
+  `<h2 class="serif" style="margin:0;font-size:30px">Personaliza cada detalle</h2>${optsHTML(c, true)}`,
+  `<h2 class="serif" style="margin:0;font-size:30px">Tus datos</h2><div style="display:flex;flex-direction:column;gap:16px;max-width:600px"><label class="field">Nombre<input id="fName" autocomplete="name" value="${esc(c.name)}"></label><label class="field">Email o teléfono<input id="fContact" autocomplete="email" value="${esc(c.contact)}"></label><label class="field">¿Algo más? (ocasión, fecha, ideas)<textarea id="fNotes" rows="4">${esc(c.notes)}</textarea></label></div>`,
+  `<h2 class="serif" style="margin:0;font-size:30px">Envía tu encargo</h2><p style="margin:0;color:#CFC6BB;max-width:600px">Te contestamos con el precio final, el plazo y una propuesta de colores antes de empezar a tejer. Sin compromiso.</p>
+<div class="row"><a class="btn solid" style="min-height:56px" href="https://wa.me/${WHATSAPP}?text=${encodeURIComponent(msg)}" target="_blank" rel="noopener">Enviar por WhatsApp</a><a class="btn gold" style="min-height:56px" href="mailto:${EMAIL}?subject=${encodeURIComponent('Encargo Elunay a mi gusto')}&body=${encodeURIComponent(msg)}">Enviar por email</a></div>
+<p style="margin:0;font-size:13px;color:#A89E92">Si el botón no abre tu app, escríbenos a ${EMAIL} o al WhatsApp ${WHATSAPP} y copia este resumen:</p>
+<pre style="margin:0;white-space:pre-wrap;font:14px/1.7 Jost,sans-serif;background:#171411;border:1px solid rgba(212,180,124,.3);padding:16px;max-width:600px">${esc(msg)}</pre><button class="btn" data-copy style="align-self:flex-start">Copiar resumen</button>`
+ ];
+ v.innerHTML = `<header style="border-bottom:1px solid rgba(212,180,124,.25)"><div class="bar" style="background:transparent"><div class="in"><a href="#revista" class="kick">← Revista</a><a href="#revista" class="logo">ELUNAY</a><span class="gold" style="font-size:12px;letter-spacing:.16em">Desde [PRECIO] € · [DÍAS] días</span></div></div></header>
+<div class="wrap"><div style="flex:999 1 560px;display:flex;flex-direction:column;gap:30px">
+<div><span class="kick gold">Encargo a tu gusto</span><h1 class="serif" style="margin:8px 0 0;font-size:clamp(40px,5.4vw,64px);line-height:.98">Tu Elunay, <i class="gold">tejido para ti</i></h1></div>
+<ol class="steps">${['Modelo', 'Detalles', 'Tus datos', 'Enviar'].map((n, i) => `<li><button class="${i <= c.step ? 'done' : ''} ${i === c.step ? 'cur' : ''}" ${i === c.step ? 'aria-current="step"' : ''} data-step="${i}"><span class="serif" style="font-size:18px;letter-spacing:0">${['I', 'II', 'III', 'IV'][i]}</span>${n}</button></li>`).join('')}</ol>
+<div style="display:flex;flex-direction:column;gap:24px">${step[c.step]}</div>
+<div style="display:flex;justify-content:space-between;border-top:1px solid rgba(212,180,124,.25);padding-top:22px"><button class="btn" data-step="${c.step - 1}" style="visibility:${c.step ? 'visible' : 'hidden'}">← Atrás</button>${c.step < 3 ? `<button class="btn" data-step="${c.step + 1}" style="background:var(--paper);color:var(--ink);border-color:var(--paper)">Continuar →</button>` : ''}</div></div>
+<aside class="aside" aria-label="Tu pieza"><span class="kick gold" style="align-self:flex-start">Tu pieza</span><div style="position:relative;height:340px;width:100%;display:flex;align-items:center;justify-content:center"><div style="position:absolute;width:340px;height:340px;max-width:100%;border-radius:50%;background:radial-gradient(circle,${col[1]}66 0%,transparent 65%)"></div>${mock(c, 1.1)}</div>
+<dl><dt>Modelo</dt><dd>${model.name} ${model.sub}</dd><dt>Hilo</dt><dd>${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}</dd><dt>Herrajes</dt><dd>${met[0]}</dd><dt>Pieza</dt><dd>${pieceName(c)}</dd>${c.type !== 2 ? `<dt>${c.type === 1 ? 'Bandolera' : 'Asa'}</dt><dd>${HANDLES[c.handle]}</dd>` : ''}<dt>Extras</dt><dd>${exT}</dd></dl>
+<div style="width:100%;border-top:1px solid rgba(212,180,124,.3);padding-top:16px;display:flex;justify-content:space-between;align-items:baseline"><span class="kick" style="color:#A89E92">Desde</span><span class="serif gold" style="font-size:28px">[PRECIO] €</span></div></aside></div>`;
+}
+$('#v-encargo').addEventListener('click', (e) => {
+ const t = e.target.closest('button'); if (!t) return;
+ if (t.dataset.set) { cfg[t.dataset.set] = +t.dataset.v; renderEncargo(); }
+ else if (t.dataset.extra) { cfg.extras[t.dataset.extra] = !cfg.extras[t.dataset.extra]; renderEncargo(); }
+ else if (t.dataset.step) { cfg.step = Math.max(0, Math.min(3, +t.dataset.step)); renderEncargo(); scrollTo({ top: 0 }); }
+ else if (t.dataset.copy !== undefined) { const txt = $('#v-encargo pre').textContent; try { navigator.clipboard.writeText(txt).then(() => toast('Resumen copiado'), () => toast('Selecciona el texto para copiarlo')); } catch (er) { toast('Selecciona el texto para copiarlo'); } }
+});
+$('#v-encargo').addEventListener('input', (e) => {
+ const id = e.target.id;
+ if (id === 'fIni') { cfg.initials = e.target.value.toUpperCase().slice(0, 3); const pos = e.target.selectionStart; renderEncargo(); const n = $('#fIni'); n.focus(); n.setSelectionRange(pos, pos); }
+ else if (id === 'fName') cfg.name = e.target.value; else if (id === 'fContact') cfg.contact = e.target.value; else if (id === 'fNotes') cfg.notes = e.target.value;
+});
+
+/* ---------- eventos globales ---------- */
+document.addEventListener('click', (e) => {
+ const t = e.target.closest('[data-cfg],[data-add],[data-fav],[data-quick],[data-go],[data-closeq],[data-close-cart],[data-rm],[data-why],[data-mg-color],[data-mg-metal],[data-mg-handle],[data-mg-c2]');
+ if (!t) return;
+ if (t.dataset.cfg) { const k = t.dataset.cfg; if (k === 'extra') cfg.extras[t.dataset.v] = !cfg.extras[t.dataset.v]; else cfg[k] = +t.dataset.v; if (!$('#v-encargo').hidden) renderEncargo(); else mgUpdate(); return; }
+ if (t.dataset.add) add(t.dataset.add);
+ if (t.dataset.fav) fav(t.dataset.fav);
+ if (t.dataset.quick) quick(t.dataset.quick);
+ if (t.dataset.go) { e.preventDefault(); if (location.hash && location.hash !== '#revista') { location.hash = 'revista'; setTimeout(() => goPage(+t.dataset.go), 60); } else goPage(+t.dataset.go); }
+ if (t.dataset.closeq !== undefined) $('#quick').hidden = true;
+ if (t.dataset.closeCart !== undefined) $('#drawer').hidden = true;
+ if (t.dataset.rm) { cart.splice(+t.dataset.rm, 1); store.set('cart', cart); renderCart(); }
+ if (t.dataset.why) { const i = +t.dataset.why; $('#whyText').textContent = WHY[i][2]; document.querySelectorAll('[data-why]').forEach((b, j) => { b.setAttribute('aria-selected', j === i); b.style.borderTopColor = j === i ? 'var(--gold)' : 'transparent'; }); }
+ if (t.dataset.mgColor) { cfg.color = +t.dataset.mgColor; mgUpdate(); }
+ if (t.dataset.mgMetal) { cfg.metal = +t.dataset.mgMetal; mgUpdate(); }
+ if (t.dataset.mgHandle) { cfg.handle = +t.dataset.mgHandle; mgUpdate(); }
+ if (t.dataset.mgC2) { cfg.color2 = +t.dataset.mgC2; mgUpdate(); }
+});
+$('#quick').addEventListener('click', (e) => { if (e.target.id === 'quick') $('#quick').hidden = true; });
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { $('#quick').hidden = true; $('#drawer').hidden = true; } });
+$('#cartBtn').addEventListener('click', () => { $('#drawer').hidden = false; });
+$('#checkout').addEventListener('click', () => { $('#drawer').hidden = true; cfg.step = 3; });
+$('#nl').addEventListener('submit', (e) => { e.preventDefault(); e.target.outerHTML = '<p class="serif gold" style="margin:0;font-size:24px;font-style:italic">Bienvenida al círculo. Pronto tendrás noticias nuestras.</p>'; });
+
+/* ---------- rutas ---------- */
+let magScroll = 0;
+function route() {
+ const h = location.hash.slice(1);
+ const isF = h.startsWith('ficha-') && P[h.slice(6)], isE = h === 'encargo';
+ if (!$('#v-revista').hidden && (isF || isE)) magScroll = scrollY;
+ $('#v-revista').hidden = !!(isF || isE); $('#v-ficha').hidden = !isF; $('#v-encargo').hidden = !isE;
+ $('#quick').hidden = true;
+ if (isF) { renderFicha(h.slice(6)); scrollTo({ top: 0 }); document.title = `${P[h.slice(6)].name} ${P[h.slice(6)].sub} — ElunayBags`; }
+ else if (isE) { renderEncargo(); scrollTo({ top: 0 }); document.title = 'Encargo a tu gusto — ElunayBags'; }
+ else { document.title = 'ElunayBags — Revista'; requestAnimationFrame(() => { scrollTo({ top: magScroll }); frame(); }); }
+}
+addEventListener('hashchange', route);
+renderCart(); route(); frame();
+
+if ('serviceWorker' in navigator && location.protocol === 'https:') { navigator.serviceWorker.register('sw.js').catch(() => {}); }
+}
+</script>
+</body>
+</html>

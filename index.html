@@ -297,7 +297,7 @@ function optsHTML(c, full) {
  }
  return `<div class="opts">${h}</div>`;
 }
-const piecePrice = (c) => c && c.type === 2 ? '10 €' : '30 €';
+const piecePrice = (c) => (c.type === 0 ? [15, 20, 25][c.size] : c.type === 1 ? 15 : 10) + 5 + ' €';
 const pieceName = (c) => c.type === 0 ? 'Bolso ' + SIZES[c.size] : TYPES[c.type] === 'Para móvil' ? 'Bolso para móvil' : 'Monedero';
 let mockId = 0;
 function mock(c, scale) {
@@ -400,7 +400,7 @@ PAGES.push({ name: 'A tu gusto', html: `<div class="spread"><div class="half txt
 <h2 class="serif h1">Tejido <i class="bronze">a tu gusto</i></h2>
 <p class="lead" style="color:#3A342E">Cualquier pieza de esta revista puede tejerse para ti. Tú eliges el hilo, los herrajes, el asa y el tamaño, y grabamos tus iniciales en la placa. Nadie más tendrá un bolso igual.</p>
 <div id="mgOpts">${optsHTML(cfg, false)}</div>
-<div class="row"><a class="btn ink" href="#encargo">Encargar mi pieza →</a><span style="font-size:13px;color:var(--muted)">A medida: 30 € · Monedero 10 € · Lista en [DÍAS] días</span></div></div>
+<div class="row"><a class="btn ink" href="#encargo">Encargar mi pieza →</a><span style="font-size:13px;color:var(--muted)">A medida: solo 5 € más que su precio · Lista en [DÍAS] días</span></div></div>
 <div class="half dark stick" style="display:flex;align-items:center;justify-content:center;background:#171411"><div id="mgMock">${mock(cfg, 1.6)}</div><span class="folio gold" style="position:absolute;bottom:3vh;right:3vw">— 11 —</span></div></div>` });
 PAGES.push({ name: 'La artesana', html: `<div class="spread rev"><div class="half" style="background:#E6DDD2;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:4vw;color:#6B5F52"><span class="kick">[Foto de la artesana tejiendo]</span><span style="font-size:13px;max-width:320px">Una foto real de quien teje cada Elunay genera más confianza que cualquier texto.</span></div>
 <div class="half txt"><span class="kick bronze">La artesana</span><h2 class="serif h1">Las manos <i class="bronze">detrás de Elunay</i></h2>
@@ -482,7 +482,7 @@ function renderEncargo() {
  const c = cfg, col = COLORS[c.color], met = METALS[c.metal];
  const ex = EXTRAS.filter((e) => c.extras[e]); const exT = ex.length ? ex.join(', ') : 'Ninguno';
  const model = P[IDS[c.model]];
- const msg = `Hola Elunay, quiero encargar un bolso a mi gusto:\n- Modelo: ${model.name} ${model.sub}\n- Hilo: ${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}\n- Herrajes: ${met[0]}\n- Pieza: ${pieceName(c)} (${piecePrice(c)})\n${c.type !== 2 ? '- Asa: ' + HANDLES[c.handle] + '\n' : ''}- Extras: ${exT}\n- Iniciales: ${c.initials || '—'}\n- Nombre: ${c.name || '—'}\n- Contacto: ${c.contact || '—'}\n- Notas: ${c.notes || '—'}${cart.length ? '\n- En mi cesta: ' + cart.map((k) => P[k].name + ' ' + P[k].sub).join(', ') : ''}`;
+ const msg = `Hola Elunay, quiero encargar un bolso a mi gusto:\n- Modelo: ${model.name} ${model.sub}\n- Hilo: ${col[0]}${c.color2 ? ' + ' + SECOND[c.color2][0] : ''}\n- Herrajes: ${met[0]}\n- Pieza: ${pieceName(c)} (a medida, ${piecePrice(c)})\n${c.type !== 2 ? '- Asa: ' + HANDLES[c.handle] + '\n' : ''}- Extras: ${exT}\n- Iniciales: ${c.initials || '—'}\n- Nombre: ${c.name || '—'}\n- Contacto: ${c.contact || '—'}\n- Notas: ${c.notes || '—'}${cart.length ? '\n- En mi cesta: ' + cart.map((k) => P[k].name + ' ' + P[k].sub).join(', ') : ''}`;
  const pills = (arr, key) => arr.map((n, i) => `<button class="pill ${c[key] === i ? 'on' : ''}" aria-pressed="${c[key] === i}" data-set="${key}" data-v="${i}">${Array.isArray(n) ? n[0] : n}</button>`).join('');
  const step = [
   `<h2 class="serif" style="margin:0;font-size:30px">Elige el modelo base</h2><div class="models">${IDS.map((k, i) => `<button class="${c.model === i ? 'on' : ''}" aria-pressed="${c.model === i}" data-set="model" data-v="${i}"><span class="ph"><img src="${P[k].img}" alt="" loading="lazy"></span><span>${P[k].name} <i>${P[k].sub}</i></span></button>`).join('')}</div>`,
@@ -493,7 +493,7 @@ function renderEncargo() {
 <p style="margin:0;font-size:13px;color:#A89E92">Si el botón no abre tu app, escríbenos a ${EMAIL} o al WhatsApp ${WHATSAPP} y copia este resumen:</p>
 <pre style="margin:0;white-space:pre-wrap;font:14px/1.7 Jost,sans-serif;background:#171411;border:1px solid rgba(212,180,124,.3);padding:16px;max-width:600px">${esc(msg)}</pre><button class="btn" data-copy style="align-self:flex-start">Copiar resumen</button>`
  ];
- v.innerHTML = `<header style="border-bottom:1px solid rgba(212,180,124,.25)"><div class="bar" style="background:transparent"><div class="in"><a href="#revista" class="kick">← Revista</a><a href="#revista" class="logo">ELUNAY</a><span class="gold" style="font-size:12px;letter-spacing:.16em">A medida: 30 € · Monedero 10 € · [DÍAS] días</span></div></div></header>
+ v.innerHTML = `<header style="border-bottom:1px solid rgba(212,180,124,.25)"><div class="bar" style="background:transparent"><div class="in"><a href="#revista" class="kick">← Revista</a><a href="#revista" class="logo">ELUNAY</a><span class="gold" style="font-size:12px;letter-spacing:.16em">A medida: +5 € sobre su precio · [DÍAS] días</span></div></div></header>
 <div class="wrap"><div style="flex:999 1 560px;display:flex;flex-direction:column;gap:30px">
 <div><span class="kick gold">Encargo a tu gusto</span><h1 class="serif" style="margin:8px 0 0;font-size:clamp(40px,5.4vw,64px);line-height:.98">Tu Elunay, <i class="gold">tejido para ti</i></h1></div>
 <ol class="steps">${['Modelo', 'Detalles', 'Tus datos', 'Enviar'].map((n, i) => `<li><button class="${i <= c.step ? 'done' : ''} ${i === c.step ? 'cur' : ''}" ${i === c.step ? 'aria-current="step"' : ''} data-step="${i}"><span class="serif" style="font-size:18px;letter-spacing:0">${['I', 'II', 'III', 'IV'][i]}</span>${n}</button></li>`).join('')}</ol>

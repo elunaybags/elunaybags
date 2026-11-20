@@ -42,9 +42,10 @@ body.mag-on{overflow:hidden}
 .pg.turning{box-shadow:30px 0 70px rgba(0,0,0,.5)}
 .pg .shade{opacity:0;transition:opacity .95s;background:linear-gradient(90deg,rgba(0,0,0,0),rgba(0,0,0,.18) 60%,rgba(0,0,0,.55))}
 .pg.turned .shade{opacity:1}
-.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:42;width:52px;height:52px;border-radius:26px;border:1px solid rgba(212,180,124,.6);background:rgba(14,12,10,.7);color:var(--paper);font-size:24px;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
+.nav-arrow{position:fixed;top:50%;transform:translateY(-50%);z-index:42;width:40px;height:40px;border-radius:20px;border:0;background:transparent;color:var(--paper);mix-blend-mode:difference;opacity:.6;font-size:26px;font-family:'Bodoni Moda',serif;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
 .nav-arrow[disabled]{opacity:0;pointer-events:none}
-@media(max-width:820px){.nav-arrow{top:auto;bottom:16px;transform:none;width:44px;height:44px}}
+@media(max-width:820px){.nav-arrow{display:none}}
+.nav-arrow:hover{opacity:1}
 .pg{position:absolute;inset:0;transform-origin:0 50%;backface-visibility:hidden;will-change:transform;background:var(--paper)}
 .shade{position:absolute;inset:0;pointer-events:none;z-index:5}
 .spread{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));height:100%}
@@ -74,9 +75,10 @@ dl.spec dd{margin:4px 0 0;font-size:14px}
 .cat button:hover img{transform:scale(1.05)}
 .cat .nm{font-family:'Bodoni Moda',serif;font-size:min(1.3vw,2vh);line-height:1.25;min-height:2.5em;display:block}
 .cat .pr{font-size:12px;color:var(--muted)}
-.dots{position:fixed;left:50%;bottom:16px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:12px;padding:6px 16px;border-radius:30px;background:rgba(14,12,10,.8);color:var(--paper)}
-.dots button{width:8px;height:40px;border:0;padding:0;background:linear-gradient(rgba(243,237,228,.45),rgba(243,237,228,.45)) center/100% 3px no-repeat;transition:width .3s}
-.dots button.on{width:22px;background:linear-gradient(var(--gold),var(--gold)) center/100% 3px no-repeat}
+.dots{position:fixed;left:50%;bottom:10px;transform:translateX(-50%);z-index:40;display:flex;align-items:center;gap:8px;padding:4px 8px;color:rgba(243,237,228,.85);mix-blend-mode:difference;pointer-events:none}
+.dots>*{pointer-events:auto}
+.dots button{width:4px;height:24px;border:0;padding:0;background:linear-gradient(rgba(243,237,228,.45),rgba(243,237,228,.45)) center/100% 1px no-repeat;transition:width .3s}
+.dots button.on{width:14px;background:linear-gradient(#F3EDE4,#F3EDE4) center/100% 1px no-repeat}
 .hint{animation:hint 2.2s ease-in-out infinite}
 @keyframes hint{50%{transform:translateY(8px);opacity:1}}
 .swatch{width:44px;height:44px;border-radius:50%;border:1px solid rgba(14,12,10,.25);padding:0}
@@ -198,7 +200,7 @@ dl.spec dd{margin:4px 0 0;font-size:14px}
 <main id="v-revista" class="view">
 <div id="mag"><div class="stage" id="stage"></div></div>
 <button class="nav-arrow" id="prevBtn" style="left:16px" aria-label="Página anterior">‹</button><button class="nav-arrow" id="nextBtn" style="right:16px" aria-label="Página siguiente">›</button>
-<nav class="dots" aria-label="Páginas"><span class="serif" id="pgLabel" style="min-width:58px;font-size:14px">01 / 12</span><div id="dots" style="display:flex;gap:4px"></div></nav>
+<nav class="dots" aria-label="Páginas"><span class="serif" id="pgLabel" style="font-size:11px;letter-spacing:.1em">01 / 12</span><div id="dots" style="display:flex;gap:3px"></div></nav>
 </main>
 
 <div id="v-ficha" class="view page" hidden></div>

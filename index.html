@@ -68,7 +68,7 @@ body.mag-on{overflow:hidden}
 dl.spec{margin:0;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1.6vh 2vw;padding-top:2vh;border-top:1px solid currentColor}
 dl.spec dt{font-size:10px;letter-spacing:.3em;text-transform:uppercase;opacity:.8}
 dl.spec dd{margin:4px 0 0;font-size:14px}
-.cat{flex:1;min-height:0;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:2.4vh 1.4vw;align-content:start;overflow:auto}
+.cat{flex:1;min-height:0;display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:2.4vh 1.4vw;align-content:start;overflow:auto}
 .cat button{display:flex;flex-direction:column;align-items:stretch;gap:6px;padding:0;border:0;background:transparent;text-align:left}
 .cat .ph{display:block;width:100%;aspect-ratio:1/1}
 .cat img{width:100%;height:100%;object-fit:contain;object-position:center bottom;filter:drop-shadow(0 14px 16px rgba(14,12,10,.18));transition:transform .8s}
@@ -243,12 +243,15 @@ const P = {
  terciopelo: { name: 'Terciopelo', sub: 'Tricolor', img: 'img/terciopelo.webp', tag: 'Hilo de terciopelo', mat: 'Terciopelo marrón, negro y blanco', metal: 'Boquilla y cadena dorada', wear: 'Al hombro', story: 'Suave hilo de terciopelo en marrón, negro y blanco con cadena dorada. Calidez de invierno.' },
  'movil-oliva': { name: 'Móvil', sub: 'Oliva & Crema', img: 'img/movil-oliva.webp', gallery: ['img/movil-oliva.webp', 'img/movil-oliva-1.jpg', 'img/movil-oliva-2.jpg', 'img/movil-duo.jpg'], tag: 'Bolso para el móvil · Placa plateada', mat: 'Hilo textil verde oliva y crema', metal: 'Mosquetones y placa plateados', wear: 'Cruzado, manos libres', story: 'Tu móvil, siempre a mano y con estilo. Punto en relieve en verde oliva y crema, bandolera trenzada larga para llevarlo cruzado y flecos que le dan movimiento.' },
  'movil-burdeos': { name: 'Móvil', sub: 'Burdeos & Crema', img: 'img/movil-burdeos.webp', gallery: ['img/movil-burdeos.webp', 'img/movil-burdeos-1.jpg', 'img/movil-duo.jpg'], tag: 'Bolso para el móvil · Placa dorada', mat: 'Hilo textil burdeos y crema', metal: 'Mosquetones y placa dorados', wear: 'Cruzado, manos libres', story: 'Burdeos y crema entrelazados punto a punto, con bandolera trenzada a juego y detalles dorados. El compañero perfecto para salir solo con lo esencial.' },
+ 'terciopelo-noir': { name: 'Terciopelo', sub: 'Noir', img: 'img/terciopelo-noir.webp', tag: 'Hilo de terciopelo · Placa dorada', mat: 'Hilo de terciopelo negro', metal: 'Placa dorada', wear: 'En la mano, tipo cartera', story: 'Un clutch de terciopelo negro, suave y profundo, con asa integrada en el propio tejido. Elegancia en estado puro para cualquier noche.' },
+ 'lent-noche': { name: 'Lentejuelas', sub: 'Noche', img: 'img/lent-noche.webp', tag: 'Lentejuelas negras · Cadena plateada', mat: 'Hilo gris carbón con hebra brillante', metal: 'Cadena plateada', wear: 'Al hombro o en la mano', story: 'Gris carbón con destellos y lentejuelas negras cosidas una a una. Brilla con discreción y se convierte en el centro de todas las miradas.' },
  plata: { name: 'Aro', sub: 'Plata', img: 'img/plata.webp', tag: 'Asa de aro forrada', mat: 'Hilo plateado satinado', metal: 'Asa circular forrada a mano', wear: 'En la mano', story: 'Hilo plateado satinado y asa circular forrada a mano. Escultural y luminoso.' }
 };
 const IDS = Object.keys(P);
-const SZ = {"trenza": "g", "cacao": "g", "aros": "m", "lentejuelas": "p", "flecos": "m", "noir": "m", "bosque": "g", "saten": "m", "terciopelo": "p", "plata": "p", "movil-oliva": "p", "movil-burdeos": "p"};
+const SZ = {"terciopelo-noir": "p", "lent-noche": "p", "trenza": "g", "cacao": "g", "aros": "m", "lentejuelas": "p", "flecos": "m", "noir": "m", "bosque": "g", "saten": "m", "terciopelo": "p", "plata": "p", "movil-oliva": "p", "movil-burdeos": "p"};
 const PRICE = { g: 25, m: 20, p: 15 }, SZNAME = { g: 'Grande', m: 'Mediano', p: 'Pequeño' };
-IDS.forEach((k) => { P[k].id = k; P[k].size = SZNAME[SZ[k]]; P[k].price = PRICE[SZ[k]] + ' €'; if (!P[k].gallery) P[k].gallery = [P[k].img]; });
+const GAL = { cacao: ['img/g-cacao.jpg'], lentejuelas: ['img/g-arena.jpg'], noir: ['img/g-noir.jpg'], bosque: ['img/g-bosque.jpg'], saten: ['img/g-saten-1.jpg', 'img/g-saten-2.jpg', 'img/g-saten-3.jpg'], plata: ['img/g-plata-1.jpg', 'img/g-plata-2.jpg'], 'terciopelo-noir': ['img/g-terciopelo-noir.jpg'], 'lent-noche': ['img/g-lent-noche.jpg'] };
+IDS.forEach((k) => { P[k].id = k; P[k].size = SZNAME[SZ[k]]; P[k].price = PRICE[SZ[k]] + ' €'; if (!P[k].gallery) P[k].gallery = [P[k].img].concat(GAL[k] || []); });
 const FEATURES = [['cacao', 'Pieza de la temporada', 0], ['trenza', 'Textura en relieve', 1], ['aros', 'Elegancia de noche', 0], ['lentejuelas', 'Pieza statement', 1], ['noir', 'El esencial', 0]];
 const COLORS = [['Verde petróleo', '#0F4A45'], ['Burdeos', '#5E1A22'], ['Chocolate', '#3E2418'], ['Arena', '#B08A62'], ['Noir', '#141210'], ['Marfil', '#EDE4D3'], ['Plata', '#A9ADB3'], ['Blanco', '#F7F5F0']];
 const METALS = [['Oro', '#D4B47C'], ['Plata', '#C9CCD1']];
